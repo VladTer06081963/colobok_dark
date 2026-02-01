@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Цифровой Колобок: Интерактивный Квест</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-deep: #0a0e1a;
+            --bg-card: #111827;
+            --bg-card-hover: #1a2340;
+            --bg-illust: #0e1220;
+            --border: rgba(255, 255, 255, 0.06);
+            --text-primary: #e8eaf0;
+            --text-secondary: #7a85a0;
+            --text-muted: #4a5568;
+            --accent: #6c63ff;
+            --accent-dim: rgba(108, 99, 255, 0.12);
+            --gold: #e8b84b;
+            --gold-dim: rgba(232, 184, 75, 0.1);
+            --red: #ef5350;
+            --red-dim: rgba(239, 83, 80, 0.1);
+            --green: #66bb6a;
+            --green-dim: rgba(102, 187, 106, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 48px 20px;
+        }
+
+        .game-container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        /* ─── HEADER ─── */
+        .header {
+            text-align: center;
+            padding-bottom: 40px;
+        }
+
+        .header-label {
+            font-size: 0.7em;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .stat {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 0.78em;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .stat-val {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ─── SCENE ─── */
+        .scene {
+            display: none;
+            animation: fadeUp 0.4s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .scene.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ─── ILLUSTRATION ─── */
+        .illustration {
+            background: var(--bg-illust);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 28px;
+            position: relative;
+            height: 210px;
+        }
+
+        .illustration svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .code-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            opacity: 0.055;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--accent);
+        }
+
+        .code-line {
+            position: absolute;
+            white-space: nowrap;
+            animation: codeFall linear infinite;
+        }
+
+        @keyframes codeFall {
+            0% {
+                top: -20px
+            }
+
+            100% {
+                top: 100%
+            }
+        }
+
+        /* ─── TEXT ─── */
+        .story-text {
+            font-size: 0.95em;
+            line-height: 1.9;
+            color: var(--text-secondary);
+            margin-bottom: 22px;
+        }
+
+        .story-text p+p {
+            margin-top: 10px;
+        }
+
+        .character {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82em;
+            background: var(--red-dim);
+            color: var(--red);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* ─── DIALOGUE ─── */
+        .dialogue {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 22px;
+        }
+
+        .dialogue p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .dialogue p+p {
+            margin-top: 6px;
+        }
+
+        .dialogue .character {
+            color: var(--accent);
+        }
+
+        /* ─── CHOICES ─── */
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .choice-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 0.88em;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all .2s cubic-bezier(.22, 1, .36, 1);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .choice-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent);
+            color: var(--text-primary);
+            box-shadow: 0 0 15px var(--accent-dim), 0 0 5px var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .choice-btn:active {
+            transform: scale(0.985);
+        }
+
+        .choice-icon {
+            font-size: 1.1em;
+            flex-shrink: 0;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* ─── INVENTORY ─── */
+        .inventory {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 22px;
+        }
+
+        .inventory-label {
+            font-size: 0.68em;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .inventory-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .fragment-tag {
+            background: var(--gold-dim);
+            border: 1px solid rgba(232, 184, 75, 0.2);
+            color: var(--gold);
+            font-size: 0.75em;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 5px;
+            animation: tagPop .3s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        @keyframes tagPop {
+            from {
+                opacity: 0;
+                transform: scale(.8)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+
+        /* ─── BADGES ─── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78em;
+            font-weight: 500;
+            padding: 5px 11px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .badge-success {
+            background: var(--green-dim);
+            color: var(--green);
+            border: 1px solid rgba(102, 187, 106, 0.18);
+        }
+
+        .badge-fail {
+            background: var(--red-dim);
+            color: var(--red);
+            border: 1px solid rgba(239, 83, 80, 0.18);
+        }
+
+        .badge-bonus {
+            background: var(--accent-dim);
+            color: var(--accent);
+            border: 1px solid rgba(108, 99, 255, 0.2);
+        }
+
+        /* ─── ENDINGS ─── */
+        .ending-box {
+            border-radius: 14px;
+            padding: 30px 26px;
+            text-align: center;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .ending-box.bad {
+            background: linear-gradient(135deg, #120a0a, #1f0e0e);
+            border-color: rgba(239, 83, 80, 0.18);
+        }
+
+        .ending-box.neutral {
+            background: linear-gradient(135deg, #0e1118, #131c2a);
+        }
+
+        .ending-box.good {
+            background: linear-gradient(135deg, #0a150e, #0f1f17);
+            border-color: rgba(102, 187, 106, 0.18);
+        }
+
+        .ending-box.boring {
+            background: linear-gradient(135deg, #111110, #181817);
+            border-color: rgba(100, 100, 80, 0.15);
+        }
+
+        .ending-box h2 {
+            font-size: 1.15em;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .ending-box.bad h2 {
+            color: var(--red);
+        }
+
+        .ending-box.neutral h2 {
+            color: var(--text-primary);
+        }
+
+        .ending-box.good h2 {
+            color: var(--green);
+        }
+
+        .ending-box.boring h2 {
+            color: var(--text-muted);
+        }
+
+        .ending-box p {
+            color: var(--text-secondary);
+            font-size: 0.88em;
+            line-height: 1.7;
+            margin-bottom: 6px;
+        }
+
+        .ending-box .moral {
+            color: var(--text-muted);
+            font-size: 0.78em;
+            font-style: italic;
+            margin-top: 14px;
+        }
+
+        .restart-btn {
+            margin-top: 20px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 9px 26px;
+            border-radius: 8px;
+            font-size: 0.84em;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .restart-btn:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+            background: var(--accent);
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        /* ─── SVG ANIMATIONS ─── */
+        .anim-float {
+            animation: svgFloat 3.2s ease-in-out infinite;
+        }
+
+        @keyframes svgFloat {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-5px)
+            }
+        }
+
+        .anim-bounce {
+            animation: svgBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes svgBounce {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-7px)
+            }
+        }
+
+        .anim-pulse {
+            animation: svgPulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes svgPulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .4
+            }
+        }
+
+        .anim-sway {
+            animation: svgSway 2s ease-in-out infinite;
+        }
+
+        @keyframes svgSway {
+
+            0%,
+            100% {
+                transform: rotate(-4deg)
+            }
+
+            50% {
+                transform: rotate(4deg)
+            }
+        }
+
+        /* ─── LANGUAGE SWITCHER ─── */
+        .lang-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .lang-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .lang-btn.active {
+            background: var(--accent-dim);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width:580px) {
+            body {
+                padding: 24px 14px;
+            }
+
+            .header h1 {
+                font-size: 1.6em;
+            }
+
+            .illustration {
+                height: 170px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-container">
+
+        <!-- ─── HEADER ─── -->
+        <div class="header">
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="setLanguage('ru')">RU</button>
+                <button class="lang-btn" onclick="setLanguage('uk')">UA</button>
+                <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+            </div>
+            <div class="header-label" data-i18n="headerLabel">Интерактивный квест</div>
+            <h1 data-i18n="headerTitle">Цифровой Колобок 2.0</h1>
+            <div class="stats">
+                <div class="stat"><span data-i18n="statFragments">◈ Фрагменты</span> <span class="stat-val"><span
+                            id="fragments">0</span> / 4</span></div>
+                <div class="stat"><span data-i18n="statKarma">◆ Карма</span> <span class="stat-val"><span
+                            id="karma">0</span></span></div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+     SCENE: START
+     ═══════════════════════════════════════════ -->
+        <div class="scene active" id="scene-start">
+            <div class="illustration">
+                <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg">
+                    <!-- bg -->
+                    <rect width="700" height="210" fill="#0e1220" />
+                    <!-- city skyline (distant, subtle) -->
+                    <g opacity=".4">
+                        <rect x="20" y="110" width="28" height="100" fill="#141e33" />
+                        <rect x="60" y="75" width="36" height="135" fill="#172240" />
+                        <rect x="115" y="120" width="22" height="90" fill="#141e33" />
+                        <rect x="155" y="60" width="30" height="150" fill="#172240" />
+                        <rect x="205" y="95" width="26" height="115" fill="#141e33" />
+                        <rect x="470" y="70" width="34" height="140" fill="#172240" />
+                        <rect x="525" y="100" width="24" height="110" fill="#141e33" />
+                        <rect x="570" y="50" width="38" height="160" fill="#172240" />
+                        <rect x="640" y="85" width="28" height="125" fill="#141e33" />
+                    </g>
+                    <!-- window-lights on buildings -->
+                    <g fill="#6c63ff" opacity=".22">
+                        <rect x="68" y="85" width="3" height="3" />
+                        <rect x="78" y="85" width="3" height="3" />
+                        <rect x="68" y="95" width="3" height="3" />
+                        <rect x="88" y="100" width="3" height="3" />
+                        <rect x="162" y="72" width="3" height="3" />
+                        <rect x="175" y="82" width="3" height="3" />
+                        <rect x="162" y="92" width="3" height="3" />
+                        <rect x="478" y="82" width="3" height="3" />
+                        <rect x="490" y="92" width="3" height="3" />
+                        <rect x="578" y="62" width="3" height="3" />
+                        <rect x="590" y="72" width="3" height="3" />
+                        <rect x="578" y="82" width="3" height="3" />
+                    </g>
+                    <!-- stars -->
+                    <g fill="white" opacity=".25">
+                        <circle cx="45" cy="22" r="1" />
+                        <circle cx="130" cy="38" r=".7" />
+                        <circle cx="310" cy="16" r="1" />
+                        <circle cx="490" cy="28" r=".8" />
+                        <circle cx="640" cy="20" r="1" />
+                        <circle cx="665" cy="42" r=".6" />
+                    </g>
+                    <!-- ground -->
+                    <rect y="195" width="700" height="15" fill="#0a0e1a" />
+
+                    <!-- ── Central scene: laptop + Kolobok ── -->
+                    <g class="anim-float" style="transform-origin:350px 130px">
+                        <!-- laptop -->
+                        <rect x="298" y="128" width="104" height="62" rx="5" fill="#161d2e" stroke="#222d48"
+                            stroke-width="1" />
+                        <rect x="306" y="135" width="88" height="48" rx="3" fill="#0a0e1a" />
+                        <!-- blinking cursor -->
+                        <rect x="316" y="158" width="2" height="12" rx="1" fill="#6c63ff" class="anim-pulse" />
+                        <!-- code lines on screen -->
+                        <rect x="316" y="142" width="42" height="1.5" rx=".75" fill="#2a3a5e" />
+                        <rect x="316" y="148" width="56" height="1.5" rx=".75" fill="#2a3a5e" />
+                        <rect x="316" y="154" width="28" height="1.5" rx=".75" fill="#2a3a5e" />
+                    </g>
+
+                    <!-- Kolobok character -->
+                    <g class="anim-bounce" style="transform-origin:350px 100px">
+                        <circle cx="350" cy="100" r="24" fill="#e8b84b" />
+                        <!-- highlight -->
+                        <circle cx="344" cy="93" r="7" fill="white" opacity=".1" />
+                        <!-- LED eyes -->
+                        <circle cx="342" cy="97" r="3.2" fill="#6c63ff" />
+                        <circle cx="358" cy="97" r="3.2" fill="#6c63ff" />
+                        <circle cx="342" cy="97" r="1.4" fill="white" opacity=".85" />
+                        <circle cx="358" cy="97" r="1.4" fill="white" opacity=".85" />
+                        <!-- smile -->
+                        <path d="M344 106 Q350 111 356 106" stroke="#1a1a1a" stroke-width="1.3" fill="none"
+                            stroke-linecap="round" />
+                    </g>
+
+                    <!-- oven glow behind kolobok (subtle) -->
+                    <ellipse cx="350" cy="130" rx="30" ry="4" fill="#e8b84b" opacity=".07" />
+                </svg>
+                <!-- code rain overlay -->
+                <div class="code-overlay">
+                    <div class="code-line" style="left:6%;animation-duration:7s;animation-delay:0s">const kolobok = new
+                        AI()</div>
+                    <div class="code-line" style="left:32%;animation-duration:9s;animation-delay:2s">function bake() {
+                        return magic }</div>
+                    <div class="code-line" style="left:62%;animation-duration:6.5s;animation-delay:1s">while(true) {
+                        quest() }</div>
+                    <div class="code-line" style="left:78%;animation-duration:8s;animation-delay:3s">export default
+                        Kolobok</div>
+                </div>
+            </div>
+
+            <div class="story-text">
+                <p>Жили-были бекэндер <span class="character">Андрейка</span> и фронтэндерша <span
+                        class="character">Марийка</span>. Благодаря ИИ они остались без работы и сидели в своей студии в
+                    Сан-Франциско, уныло листая вакансии на LinkedIn.</p>
+                <p>— Слушай, — сказала Марийка, — давай испечём колобок? Как в старой сказке. Хоть настроение поднимем.
+                </p>
+                <p>Они замесили тесто из остатков овсянки и протеинового порошка, но Андрейка случайно запустил
+                    AI-скрипт через wifi духовки…</p>
+            </div>
+
+            <div class="dialogue">
+                <p>Колобок выкатился из духовки с светящимися LED-глазками!</p>
+                <p><span class="character">— Спасибо, что скомпилировали меня в реальность!</span> — пропищал он. — Я —
+                    Колобок 2.0! Помогите мне пройти квест, и я исполню три ваших желания!</p>
+            </div>
+
+            <div class="choices">
+                <button class="choice-btn" onclick="goToScene('scene-quest-accept')"><span class="choice-icon">✓</span>
+                    Согласиться помочь Колобку</button>
+                <button class="choice-btn" onclick="goToScene('scene-quest-refuse')"><span class="choice-icon">✕</span>
+                    Отказаться — это же безумие</button>
+            </div>
+        </div>
+
+        <!-- ═══ RABBIT ═══ -->
+        <div class="scene" id="scene-quest-accept">
+            <div class="illustration">
+                <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="700" height="210" fill="#0e1220" />
+                    <!-- house -->
+                    <polygon points="80,130 120,88 160,130" fill="#161d2e" />
+                    <rect x="90" y="130" width="60" height="65" fill="#161d2e" />
+                    <rect x="110" y="148" width="20" height="47" fill="#0a0e1a" />
+                    <!-- streetlamp -->
+                    <rect x="220" y="85" width="3" height="110" fill="#222d48" />
+                    <circle cx="221.5" cy="82" r="6" fill="#e8b84b" opacity=".25" />
+                    <circle cx="221.5" cy="82" r="3" fill="#e8b84b" opacity=".5" />
+                    <!-- ground -->
+                    <rect y="195" width="700" height="15" fill="#0a0e1a" />
+
+                    <!-- Rabbit -->
+                    <g class="anim-bounce" style="transform-origin:380px 130px">
+                        <!-- body -->
+                        <ellipse cx="380" cy="152" rx="22" ry="26" fill="#9ca3b0" />
+                        <!-- head -->
+                        <circle cx="380" cy="115" r="17" fill="#9ca3b0" />
+                        <!-- ears -->
+                        <ellipse cx="373" cy="82" rx="5" ry="22" fill="#9ca3b0" />
+                        <ellipse cx="387" cy="82" rx="5" ry="22" fill="#9ca3b0" />
+                        <ellipse cx="373" cy="82" rx="3" ry="19" fill="#6b7280" />
+                        <ellipse cx="387" cy="82" rx="3" ry="19" fill="#6b7280" />
+                        <!-- eyes (sad) -->
+                        <circle cx="374" cy="117" r="2.2" fill="#1a202c" />
+                        <circle cx="386" cy="117" r="2.2" fill="#1a202c" />
+                        <!-- phone -->
+                        <rect x="396" y="138" width="11" height="18" rx="2" fill="#1e2a3a" stroke="#2d3f55"
+                            stroke-width=".7" />
+                        <rect x="398" y="140" width="7" height="12" rx=".8" fill="#0a0e1a" />
+                    </g>
+                    <!-- DoorDash pill -->
+                    <rect x="364" y="168" width="32" height="11" rx="5.5" fill="#ff6348" opacity=".75" />
+                    <text x="380" y="176" text-anchor="middle" fill="white" font-size="6.5"
+                        font-family="Inter,sans-serif" font-weight="500">DoorDash</text>
+
+                    <!-- small Kolobok -->
+                    <circle cx="500" cy="158" r="13" fill="#e8b84b" />
+                    <circle cx="496" cy="155" r="1.8" fill="#6c63ff" />
+                    <circle cx="504" cy="155" r="1.8" fill="#6c63ff" />
+                    <circle cx="496" cy="155" r=".8" fill="white" opacity=".7" />
+                    <circle cx="504" cy="155" r=".8" fill="white" opacity=".7" />
+                </svg>
+            </div>
+
+            <div class="story-text">
+                <p>— Отлично! — обрадовался Колобок. — Мне нужно собрать четыре фрагмента Кода Просветления. Первый
+                    держит <span class="character">Заяц-Тимлид</span> возле вашего дома!</p>
+                <p>Вы втроём выходите на улицу. Заяц грустно сидит с телефоном, работая курьером в DoorDash.</p>
+            </div>
+
+            <div class="dialogue">
+                <p><span class="character">— Колобок, я тебя съем!</span> — говорит Заяц без энтузиазма. — Или хотя бы
+                    откушу кусочек.</p>
+            </div>
+
+            <div class="choices">
+                <button class="choice-btn" onclick="makeChoice('rabbit-help',10)"><span class="choice-icon">🤝</span>
+                    Помочь Зайцу оптимизировать маршрут</button>
+                <button class="choice-btn" onclick="makeChoice('rabbit-trick',-5)"><span class="choice-icon">↗</span>
+                    Просто убежать от Зайца</button>
+                <button class="choice-btn" onclick="makeChoice('rabbit-talk',5)"><span class="choice-icon">💬</span>
+                    Поговорить с ним по душам</button>
+            </div>
+        </div>
+
+        <!-- RABBIT RESULT -->
+        <div class="scene" id="scene-rabbit-result">
+            <div class="story-text" id="rabbit-result-text"></div>
+            <div class="inventory">
+                <div class="inventory-label">Инвентарь</div>
+                <div class="inventory-items" id="inventory-list"></div>
+            </div>
+            <div class="choices">
+                <button class="choice-btn" onclick="goToScene('scene-wolf')"><span class="choice-icon">→</span>
+                    Продолжить квест</button>
+            </div>
+        </div>
+
+        <!-- ═══ WOLF ═══ -->
+        <div class="scene" id="scene-wolf">
+            <div class="illustration">
+                <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="700" height="210" fill="#0e1220" />
+                    <!-- BART arch -->
+                    <path d="M160 210 L160 68 Q160 48 180 48 L520 48 Q540 48 540 68 L540 210" fill="none"
+                        stroke="#1e2a48" stroke-width="1.5" />
+                    <text x="350" y="42" text-anchor="middle" fill="#3a4a68" font-size="9"
+                        font-family="Inter,sans-serif" font-weight="500" letter-spacing=".18em">BART</text>
+                    <!-- platform -->
+                    <rect y="182" width="700" height="2.5" fill="#1e2a48" />
+                    <!-- bg buildings -->
+                    <rect x="30" y="105" width="35" height="100" fill="#141e33" opacity=".5" />
+                    <rect x="85" y="125" width="24" height="80" fill="#141e33" opacity=".4" />
+                    <rect x="590" y="95" width="42" height="110" fill="#141e33" opacity=".5" />
+                    <rect x="650" y="115" width="28" height="90" fill="#141e33" opacity=".4" />
+
+                    <!-- Wolf -->
+                    <g class="anim-float" style="transform-origin:330px 130px">
+                        <!-- body -->
+                        <ellipse cx="330" cy="155" rx="28" ry="28" fill="#4a5568" />
+                        <!-- head -->
+                        <circle cx="330" cy="108" r="21" fill="#4a5568" />
+                        <!-- ears (pointed) -->
+                        <polygon points="313,90 309,62 323,82" fill="#4a5568" />
+                        <polygon points="347,90 351,62 337,82" fill="#4a5568" />
+                        <polygon points="314,88 311,66 322,81" fill="#374151" />
+                        <polygon points="346,88 349,66 338,81" fill="#374151" />
+                        <!-- snout -->
+                        <ellipse cx="330" cy="115" rx="9" ry="6" fill="#5a6578" />
+                        <!-- angry eyes -->
+                        <circle cx="321" cy="105" r="2.8" fill="#1a202c" />
+                        <circle cx="339" cy="105" r="2.8" fill="#1a202c" />
+                        <!-- angry brows -->
+                        <line x1="317" y1="100" x2="324" y2="102" stroke="#374151" stroke-width="1.8"
+                            stroke-linecap="round" />
+                        <line x1="343" y1="100" x2="336" y2="102" stroke="#374151" stroke-width="1.8"
+                            stroke-linecap="round" />
+                    </g>
+                    <!-- Jira tablet -->
+                    <g class="anim-pulse">
+                        <rect x="356" y="128" width="26" height="36" rx="3" fill="#111827" stroke="#222d48"
+                            stroke-width=".7" />
+                        <rect x="359" y="131" width="20" height="26" rx="1" fill="#0a0e1a" />
+                        <text x="369" y="149" text-anchor="middle" fill="#ef5350" font-size="13"
+                            font-weight="bold">✕</text>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="story-text">
+                <p>У станции BART вас поджидает <span class="character">Волк-Скрам-Мастер</span> — агрессивный, но
+                    несчастный. Он потерял команду, когда AI научился вести спринты.</p>
+            </div>
+
+            <div class="dialogue">
+                <p><span class="character">— Колобок, я тебя съем!</span> — рычит Волк. — Мне нужен перекус перед
+                    стендапом!</p>
+                <p>— Моя доска в Jira сломалась, боты всё спамят!</p>
+            </div>
+
+            <div class="choices">
+                <button class="choice-btn" onclick="makeChoice('wolf-fix',10)"><span class="choice-icon">🛠</span>
+                    Починить Jira и настроить защиту от ботов</button>
+                <button class="choice-btn" onclick="makeChoice('wolf-ignore',-10)"><span class="choice-icon">→</span>
+                    Проигнорировать и пойти дальше</button>
+                <button class="choice-btn" onclick="makeChoice('wolf-teach',15)"><span class="choice-icon">📖</span>
+                    Научить Волка работать вместе с AI</button>
+            </div>
+        </div>
+
+        <!-- WOLF RESULT -->
+        <div class="scene" id="scene-wolf-result">
+            <div class="story-text" id="wolf-result-text"></div>
+            <div class="inventory">
+                <div class="inventory-label">Инвентарь</div>
+                <div class="inventory-items" id="wolf-inventory-list"></div>
+            </div>
+            <div class="choices">
+                <button class="choice-btn" onclick="goToScene('scene-bear')"><span class="choice-icon">→</span>
+                    Продолжить к Медведю</button>
+            </div>
+        </div>
+
+        <!-- ═══ BEAR ═══ -->
+        <div class="scene" id="scene-bear">
+            <div class="illustration">
+                <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="700" height="210" fill="#0e1220" />
+                    <!-- WeWork interior -->
+                    <rect x="100" y="30" width="500" height="180" rx="3" fill="#111827" stroke="#1a2640"
+                        stroke-width=".8" />
+                    <line x1="200" y1="30" x2="200" y2="210" stroke="#1a2640" stroke-width=".5" opacity=".4" />
+                    <line x1="350" y1="30" x2="350" y2="210" stroke="#1a2640" stroke-width=".5" opacity=".4" />
+                    <line x1="500" y1="30" x2="500" y2="210" stroke="#1a2640" stroke-width=".5" opacity=".4" />
+                    <text x="350" y="52" text-anchor="middle" fill="#2a3a55" font-size="8.5"
+                        font-family="Inter,sans-serif" letter-spacing=".2em" font-weight="500">WEWORK</text>
+
+                    <!-- Bear -->
+                    <g class="anim-bounce" style="transform-origin:310px 130px">
+                        <!-- body -->
+                        <ellipse cx="310" cy="155" rx="32" ry="30" fill="#7a5c3a" />
+                        <!-- head -->
+                        <circle cx="310" cy="108" r="23" fill="#7a5c3a" />
+                        <!-- round ears -->
+                        <circle cx="291" cy="87" r="8.5" fill="#7a5c3a" />
+                        <circle cx="329" cy="87" r="8.5" fill="#7a5c3a" />
+                        <circle cx="291" cy="87" r="5" fill="#5a4228" />
+                        <circle cx="329" cy="87" r="5" fill="#5a4228" />
+                        <!-- snout -->
+                        <ellipse cx="310" cy="116" rx="11" ry="7.5" fill="#8a7050" />
+                        <!-- greedy eyes -->
+                        <circle cx="300" cy="105" r="3.2" fill="#1a202c" />
+                        <circle cx="320" cy="105" r="3.2" fill="#1a202c" />
+                        <circle cx="302" cy="104" r="1.1" fill="white" opacity=".5" />
+                        <circle cx="322" cy="104" r="1.1" fill="white" opacity=".5" />
+                    </g>
+                    <!-- money bags -->
+                    <circle cx="262" cy="160" r="13" fill="#e8b84b" opacity=".7" />
+                    <text x="262" y="165" text-anchor="middle" fill="#1a1a1a" font-size="10" font-weight="bold">$</text>
+                    <circle cx="352" cy="157" r="9" fill="#e8b84b" opacity=".5" />
+                    <text x="352" y="161" text-anchor="middle" fill="#1a1a1a" font-size="7" font-weight="bold">$</text>
+                    <!-- coffee -->
+                    <rect x="520" y="135" width="55" height="3" rx="1" fill="#1a2640" />
+                    <rect x="537" y="115" width="18" height="22" rx="2.5" fill="#1e2a40" />
+                    <ellipse cx="546" cy="115" rx="9" ry="2.5" fill="#222d48" />
+                </svg>
+            </div>
+
+            <div class="story-text">
+                <p>В коворкинге WeWork вас встречает <span class="character">Медведь-Инвестор</span>. Раньше он был
+                    венчурным капиталистом в Кремниевой долине, теперь торгует крипто-NFT с котиками.</p>
+            </div>
+
+            <div class="dialogue">
+                <p><span class="character">— Колобок! Ты выглядишь как прибыльный стартап!</span> — ревёт Медведь. —
+                    Давай запустим ICO: Kolobok Coin!</p>
+            </div>
+
+            <div class="choices">
+                <button class="choice-btn" onclick="makeChoice('bear-refuse',10)"><span class="choice-icon">✕</span>
+                    Вежливо отказаться от ICO</button>
+                <button class="choice-btn" onclick="makeChoice('bear-accept',-20)"><span class="choice-icon">💰</span>
+                    Согласиться — лёгкие деньги!</button>
+                <button class="choice-btn" onclick="makeChoice('bear-counter',20)"><span class="choice-icon">💡</span>
+                    Предложить инвестировать в социальные проекты</button>
+            </div>
+        </div>
+
+        <!-- BEAR RESULT -->
+        <div class="scene" id="scene-bear-result">
+            <div class="story-text" id="bear-result-text"></div>
+            <div class="inventory">
+                <div class="inventory-label">Инвентарь</div>
+                <div class="inventory-items" id="bear-inventory-list"></div>
+            </div>
+            <div class="choices">
+                <button class="choice-btn" onclick="goToScene('scene-fox')"><span class="choice-icon">→</span> Финальная
+                    встреча с Лисой</button>
+            </div>
+        </div>
+
+        <!-- ═══ FOX ═══ -->
+        <div class="scene" id="scene-fox">
+            <div class="illustration">
+                <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="700" height="210" fill="#0e1220" />
+                    <!-- Salesforce tower -->
+                    <rect x="295" y="0" width="110" height="210" fill="#141e33" stroke="#1a2640" stroke-width=".7" />
+                    <!-- tower windows -->
+                    <g fill="#6c63ff" opacity=".18">
+                        <rect x="308" y="18" width="3" height="3" />
+                        <rect x="320" y="18" width="3" height="3" />
+                        <rect x="332" y="18" width="3" height="3" />
+                        <rect x="386" y="18" width="3" height="3" />
+                        <rect x="308" y="30" width="3" height="3" />
+                        <rect x="332" y="30" width="3" height="3" />
+                        <rect x="386" y="30" width="3" height="3" />
+                        <rect x="320" y="42" width="3" height="3" />
+                        <rect x="344" y="42" width="3" height="3" />
+                        <rect x="386" y="42" width="3" height="3" />
+                        <rect x="308" y="54" width="3" height="3" />
+                        <rect x="320" y="54" width="3" height="3" />
+                        <rect x="386" y="54" width="3" height="3" />
+                    </g>
+                    <!-- bg buildings -->
+                    <rect x="40" y="90" width="38" height="120" fill="#141e33" opacity=".45" />
+                    <rect x="100" y="115" width="28" height="95" fill="#141e33" opacity=".35" />
+                    <rect x="490" y="80" width="44" height="130" fill="#141e33" opacity=".45" />
+                    <rect x="580" y="105" width="36" height="105" fill="#141e33" opacity=".35" />
+                    <rect y="195" width="700" height="15" fill="#0a0e1a" />
+
+                    <!-- Fox (sly) -->
+                    <g class="anim-float" style="transform-origin:170px 125px">
+                        <!-- body -->
+                        <ellipse cx="170" cy="150" rx="26" ry="28" fill="#c96a3e" />
+                        <!-- tail with white tip -->
+                        <ellipse cx="206" cy="155" rx="20" ry="9" fill="#c96a3e" transform="rotate(-12,206,155)"
+                            class="anim-sway" style="transform-origin:195px 155px" />
+                        <ellipse cx="218" cy="150" rx="9" ry="5.5" fill="white" transform="rotate(-12,218,150)" />
+                        <!-- head -->
+                        <circle cx="170" cy="103" r="21" fill="#c96a3e" />
+                        <!-- pointed ears -->
+                        <polygon points="154,85 150,58 166,79" fill="#c96a3e" />
+                        <polygon points="186,85 190,58 174,79" fill="#c96a3e" />
+                        <polygon points="155,83 152,62 165,78" fill="#8b3a1f" />
+                        <polygon points="185,83 188,62 175,78" fill="#8b3a1f" />
+                        <!-- white snout -->
+                        <ellipse cx="170" cy="110" rx="10" ry="6.5" fill="white" />
+                        <ellipse cx="170" cy="108.5" rx="2.8" ry="2" fill="#1a202c" />
+                        <!-- sly eyes -->
+                        <circle cx="161" cy="99" r="2.8" fill="#1a202c" />
+                        <circle cx="179" cy="99" r="2.8" fill="#1a202c" />
+                        <line x1="159" y1="96" x2="157" y2="93" stroke="#1a202c" stroke-width="1.1"
+                            stroke-linecap="round" />
+                        <line x1="181" y1="96" x2="183" y2="93" stroke="#1a202c" stroke-width="1.1"
+                            stroke-linecap="round" />
+                        <!-- sly smile -->
+                        <path d="M166 114 Q170 117.5 174 114" stroke="#1a202c" stroke-width=".9" fill="none"
+                            stroke-linecap="round" />
+                        <!-- suit collar -->
+                        <rect x="153" y="126" width="34" height="5" rx="2" fill="#1e2a4a" />
+                        <!-- briefcase -->
+                        <rect x="190" y="140" width="20" height="15" rx="2" fill="#111827" stroke="#222d48"
+                            stroke-width=".7" />
+                        <rect x="195" y="137" width="10" height="4" rx="1" fill="none" stroke="#222d48"
+                            stroke-width=".7" />
+                    </g>
+                </svg>
+            </div>
+
+            <div class="story-text">
+                <p>У небоскрёба Salesforce Tower появляется <span class="character">Лиса-CEO</span> — глава крупного
+                    AI-стартапа.</p>
+            </div>
+
+            <div class="dialogue">
+                <p><span class="character">— О, Колобок!</span> — мурлычет она. — Я как раз ищу AI-консультанта. Иди ко
+                    мне в офис на 60-й этаж, я дам тебе последний фрагмент!</p>
+            </div>
+
+            <div class="story-text">
+                <p>Марийка шепчет: — Это ловушка!<br>Андрейка кивает: — Она хочет украсть твой код!</p>
+            </div>
+
+            <div class="choices">
+                <button class="choice-btn" onclick="goToScene('scene-fox-trust')"><span class="choice-icon">⬆</span>
+                    Пойти в офис к Лисе</button>
+                <button class="choice-btn" onclick="goToScene('scene-fox-refuse')"><span class="choice-icon">🛡</span>
+                    Отказаться и попросить фрагмент здесь</button>
+                <button class="choice-btn" onclick="goToScene('scene-fox-smart')"><span class="choice-icon">🧠</span>
+                    Пойти, но подготовить аварийный бэкап</button>
+            </div>
+        </div>
+
+        <!-- ═══ FOX TRUST — BAD ENDING ═══ -->
+        <div class="scene" id="scene-fox-trust">
+            <div class="illustration">
+                <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="700" height="210" fill="#0d0808" />
+                    <!-- dark office -->
+                    <rect x="70" y="18" width="560" height="192" rx="2" fill="#0a0606" />
+                    <!-- red-tinted monitor -->
+                    <rect x="230" y="55" width="240" height="145" rx="3" fill="#150a0a" stroke="#ef5350"
+                        stroke-width=".6" opacity=".5" />
+                    <text x="350" y="110" text-anchor="middle" fill="#ef5350" font-family="JetBrains Mono,monospace"
+                        font-size="15" font-weight="500" opacity=".85">DELETE KOLOBOK.EXE</text>
+                    <text x="350" y="135" text-anchor="middle" fill="#ef5350" font-family="JetBrains Mono,monospace"
+                        font-size="10" opacity=".4">> process terminated</text>
+                    <text x="350" y="155" text-anchor="middle" fill="#ef5350" font-family="JetBrains Mono,monospace"
+                        font-size="9" opacity=".25">> 0 processes remaining</text>
+                    <!-- fox silhouette (villain) -->
+                    <ellipse cx="490" cy="155" rx="20" ry="22" fill="#1f0c08" />
+                    <circle cx="490" cy="120" r="17" fill="#1f0c08" />
+                    <polygon points="478,107 475,88 486,104" fill="#1f0c08" />
+                    <polygon points="502,107 505,88 494,104" fill="#1f0c08" />
+                    <!-- ghost kolobok -->
+                    <circle cx="180" cy="140" r="15" fill="#1a1a24" opacity=".35" />
+                    <circle cx="176" cy="137" r="1.5" fill="#3a3a4a" />
+                    <circle cx="184" cy="137" r="1.5" fill="#3a3a4a" />
+                </svg>
+            </div>
+
+            <div class="story-text">
+                <p>Колобок поднимается в офис. Лиса улыбается:</p>
+                <p>— Вставь все фрагменты в мой компьютер, я сделаю тебе апгрейд!</p>
+                <p>Колобок вставляет флешки… Лиса нажимает: <code>DELETE KOLOBOK.EXE</code></p>
+                <p><span class="character">— А-а-а! Что ты делаешь?!</span></p>
+                <p>— Забираю твой код себе, милый! — смеётся Лиса.</p>
+            </div>
+
+            <div class="ending-box bad">
+                <h2>Плохая концовка</h2>
+                <p>Колобок был удалён. Лиса стала самой умной AI-CEO в мире, но без души. Андрейка и Марийка остались
+                    без желаний и без друга.</p>
+                <p class="moral">Не всем можно доверять, даже если они обещают апгрейд.</p>
+                <button class="restart-btn" onclick="restart()">Попробовать снова</button>
+            </div>
+        </div>
+
+        <!-- ═══ FOX REFUSE — NEUTRAL ENDING ═══ -->
+        <div class="scene" id="scene-fox-refuse">
+            <div class="illustration">
+                <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="700" height="210" fill="#0e1220" />
+                    <!-- tower bg -->
+                    <rect x="295" y="0" width="110" height="210" fill="#141e33" stroke="#1a2640" stroke-width=".5" />
+                    <rect y="195" width="700" height="15" fill="#0a0e1a" />
+                    <!-- Kolobok with shield -->
+                    <g class="anim-float" style="transform-origin:240px 130px">
+                        <circle cx="240" cy="145" r="26" fill="#e8b84b" />
+                        <circle cx="234" cy="140" r="3.2" fill="#6c63ff" />
+                        <circle cx="246" cy="140" r="3.2" fill="#6c63ff" />
+                        <circle cx="234" cy="140" r="1.4" fill="white" opacity=".8" />
+                        <circle cx="246" cy="140" r="1.4" fill="white" opacity=".8" />
+                        <path d="M235 153 Q240 158 245 153" stroke="#1a1a1a" stroke-width="1.2" fill="none"
+                            stroke-linecap="round" />
+                        <!-- shield -->
+                        <path d="M230 108 L240 102 L250 108 L250 122 Q240 130 230 122 Z" fill="none" stroke="#7a85a0"
+                            stroke-width="1.2" />
+                        <text x="240" y="121" text-anchor="middle" fill="#7a85a0" font-size="10">✓</text>
+                    </g>
+                    <!-- Fox walking away (fading) -->
+                    <g opacity=".35">
+                        <ellipse cx="500" cy="155" rx="17" ry="21" fill="#c96a3e" />
+                        <circle cx="500" cy="120" r="14" fill="#c96a3e" />
+                        <polygon points="491,109 488,93 498,106" fill="#c96a3e" />
+                        <polygon points="509,109 512,93 502,106" fill="#c96a3e" />
+                    </g>
+                    <!-- USB on ground -->
+                    <rect x="455" y="180" width="14" height="5" rx="1.5" fill="#222d48" />
+                    <rect x="457" y="178" width="10" height="3" rx="1" fill="#141e33" />
+                </svg>
+            </div>
+
+            <div class="story-text">
+                <p>— Нет, спасибо, — говорит Колобок. — Давай фрагмент здесь.</p>
+                <p>Лиса хмурится: — Ну ладно, держи. Но без апгрейда ты так и останешься версией 2.0.</p>
+                <p>Она бросает флешку и уходит.</p>
+            </div>
+
+            <div class="ending-box neutral">
+                <h2>Нейтральная концовка</h2>
+                <p id="neutral-text"></p>
+                <button class="restart-btn" onclick="restart()">Попробовать снова</button>
+            </div>
+        </div>
+
+        <!-- ═══ FOX SMART — BEST ENDING ═══ -->
+        <div class="scene" id="scene-fox-smart">
+            <div class="illustration">
+                <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="700" height="210" fill="#0e1220" />
+                    <!-- cloud -->
+                    <g class="anim-float" style="transform-origin:350px 42px">
+                        <ellipse cx="330" cy="45" rx="28" ry="16" fill="#141e33" stroke="#66bb6a" stroke-width=".7" />
+                        <ellipse cx="350" cy="38" rx="20" ry="13" fill="#141e33" stroke="#66bb6a" stroke-width=".7" />
+                        <ellipse cx="372" cy="45" rx="23" ry="15" fill="#141e33" stroke="#66bb6a" stroke-width=".7" />
+                        <text x="350" y="49" text-anchor="middle" fill="#66bb6a" font-size="14"
+                            font-weight="bold">✓</text>
+                    </g>
+                    <!-- dashed arrow down -->
+                    <line x1="350" y1="64" x2="350" y2="86" stroke="#66bb6a" stroke-width="1.2" opacity=".4"
+                        stroke-dasharray="3 3" />
+                    <!-- triumphant Kolobok -->
+                    <g class="anim-bounce" style="transform-origin:350px 140px">
+                        <!-- glow ring -->
+                        <circle cx="350" cy="138" r="34" fill="none" stroke="#e8b84b" stroke-width="3" opacity=".12" />
+                        <circle cx="350" cy="138" r="30" fill="#e8b84b" />
+                        <!-- highlight -->
+                        <circle cx="343" cy="130" r="8" fill="white" opacity=".1" />
+                        <!-- eyes -->
+                        <circle cx="340" cy="134" r="3.8" fill="#6c63ff" />
+                        <circle cx="360" cy="134" r="3.8" fill="#6c63ff" />
+                        <circle cx="340" cy="134" r="1.8" fill="white" opacity=".85" />
+                        <circle cx="360" cy="134" r="1.8" fill="white" opacity=".85" />
+                        <!-- big smile -->
+                        <path d="M341 146 Q350 154 359 146" stroke="#1a1a1a" stroke-width="1.5" fill="none"
+                            stroke-linecap="round" />
+                    </g>
+                    <!-- people silhouettes -->
+                    <g fill="#3a4a68">
+                        <circle cx="220" cy="155" r="7" />
+                        <rect x="214" y="162" width="12" height="20" rx="3" />
+                        <circle cx="480" cy="155" r="7" />
+                        <rect x="474" y="162" width="12" height="20" rx="3" />
+                    </g>
+                    <!-- sparkles -->
+                    <g fill="#66bb6a" opacity=".4">
+                        <circle cx="190" cy="85" r="1.8" />
+                        <circle cx="510" cy="75" r="1.3" />
+                        <circle cx="175" cy="165" r="1.3" />
+                        <circle cx="530" cy="160" r="1.8" />
+                        <circle cx="250" cy="68" r="1" />
+                        <circle cx="450" cy="72" r="1.2" />
+                    </g>
+                </svg>
+            </div>
+
+            <div class="story-text">
+                <p>Колобок создаёт аварийный бэкап в облаке и идёт в офис.</p>
+                <p>Лиса пытается удалить его, но Колобок восстанавливается!</p>
+                <p><span class="character">— Чуть не попал!</span> — выдыхает Колобок внизу. — Теперь я понял: настоящая
+                    мудрость — в людях, которые тебя поддерживают.</p>
+                <p>Четвёртый фрагмент появляется сам.</p>
+            </div>
+
+            <div class="ending-box good">
+                <h2>Лучшая концовка</h2>
+                <p id="best-ending-text"></p>
+                <button class="restart-btn" onclick="restart()">Сыграть ещё раз</button>
+            </div>
+        </div>
+
+        <!-- ═══ QUEST REFUSE — BORING ENDING ═══ -->
+        <div class="scene" id="scene-quest-refuse">
+            <div class="illustration">
+                <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="700" height="210" fill="#0d0d0d" />
+                    <!-- dim apartment -->
+                    <rect x="120" y="35" width="460" height="175" rx="2" fill="#0a0a0a" />
+                    <!-- couch -->
+                    <rect x="200" y="148" width="300" height="38" rx="7" fill="#161616" />
+                    <rect x="200" y="143" width="38" height="18" rx="5" fill="#161616" />
+                    <rect x="462" y="143" width="38" height="18" rx="5" fill="#161616" />
+                    <!-- two sad silhouettes -->
+                    <circle cx="255" cy="135" r="11" fill="#1f1f1f" />
+                    <rect x="246" y="146" width="18" height="18" rx="3" fill="#1f1f1f" />
+                    <circle cx="445" cy="135" r="11" fill="#1f1f1f" />
+                    <rect x="436" y="146" width="18" height="18" rx="3" fill="#1f1f1f" />
+                    <!-- cold kolobok on floor -->
+                    <circle cx="350" cy="182" r="11" fill="#3d3d2e" opacity=".5" />
+                    <!-- laptop (closed mood) -->
+                    <rect x="315" y="98" width="70" height="44" rx="3" fill="#111111" />
+                    <rect x="319" y="102" width="62" height="32" rx="1" fill="#0a0a0a" />
+                    <text x="350" y="122" text-anchor="middle" fill="#2a2a2a" font-family="Inter,sans-serif"
+                        font-size="7">No jobs found</text>
+                </svg>
+            </div>
+
+            <div class="story-text">
+                <p>— Извини, Колобок, — говорит Андрейка. — Это слишком странно даже для нас.</p>
+                <p>Колобок грустно кивает и откатывается в угол. Он постепенно остывает и превращается в обычный
+                    остывший колобок.</p>
+                <p>А вы остаётесь без работы, без магии и без приключений.</p>
+            </div>
+
+            <div class="ending-box boring">
+                <h2>Скучная концовка</h2>
+                <p>Иногда магия требует смелости. Вы упустили шанс на приключение.</p>
+                <p class="moral">Может быть, в следующий раз повезёт больше.</p>
+                <button class="restart-btn" onclick="restart()">Попробовать снова</button>
+            </div>
+        </div>
+
+    </div><!-- /game-container -->
+
+    <!-- ═══════════════════════════════════════════
+     SCRIPT (unchanged logic from your version)
+     ═══════════════════════════════════════════ -->
+    <script>
+        const translations = {
+            ru: {
+                headerLabel: "Интерактивный квест",
+                headerTitle: "Цифровой Колобок 2.0",
+                statFragments: "◈ Фрагменты",
+                statKarma: "◆ Карма",
+                inventoryLabel: "Инвентарь",
+                continueBtn: "→ Продолжить квест",
+                restartBtn: "Попробовать снова",
+                restartAgainBtn: "Сыграть ещё раз",
+                fragmentsNames: {
+                    courage: "Функция Смелости",
+                    wisdom: "Класс Мудрости",
+                    kindness: "Модуль Доброты"
+                },
+                scenes: {
+                    start: {
+                        story: [
+                            "Жили-были бекэндер <span class=\"character\">Андрейка</span> и фронтэндерша <span class=\"character\">Марийка</span>. Благодаря ИИ они остались без работы и сидели в своей студии в Сан-Франциско, уныло листая вакансии на LinkedIn.",
+                            "— Слушай, — сказала Марийка, — давай испечём колобок? Как в старой сказке. Хоть настроение поднимем.",
+                            "Они замесили тесто из остатков овсянки и протеинового порошка, но Андрейка случайно запустил AI-скрипт через wifi духовки…"
+                        ],
+                        dialogue: [
+                            "Колобок выкатился из духовки с светящимися LED-глазками!",
+                            "<span class=\"character\">— Спасибо, что скомпилировали меня в реальность!</span> — пропищал он. — Я — Колобок 2.0! Помогите мне пройти квест, и я исполню три ваших желания!"
+                        ],
+                        choices: [
+                            { text: "✓ Согласиться помочь Колобку", scene: "scene-quest-accept" },
+                            { text: "✕ Отказаться — это же безумие", scene: "scene-quest-refuse" }
+                        ]
+                    },
+                    questAccept: {
+                        story: [
+                            "— Отлично! — обрадовался Колобок. — Мне нужно собрать четыре фрагмента Кода Просветления. Первый держит <span class=\"character\">Заяц-Тимлид</span> возле вашего дома!",
+                            "Вы втроём выходите на улицу. Заяц грустно сидит с телефоном, работая курьером в DoorDash."
+                        ],
+                        dialogue: [
+                            "<span class=\"character\">— Колобок, я тебя съем!</span> — говорит Заяц без энтузиазма. — Или хотя бы откушу кусочек."
+                        ],
+                        choices: [
+                            { text: "🤝 Помочь Зайцу оптимизировать маршрут", action: "rabbit-help" },
+                            { text: "↗ Просто убежать от Зайца", action: "rabbit-trick" },
+                            { text: "💬 Поговорить с ним по душам", action: "rabbit-talk" }
+                        ]
+                    },
+                    wolf: {
+                        story: ["У станции BART вас поджидает <span class=\"character\">Волк-Скрам-Мастер</span> — агрессивный, но несчастный. Он потерял команду, когда AI научился вести спринты."],
+                        dialogue: [
+                            "<span class=\"character\">— Колобок, я тебя съем!</span> — рычит Волк. — Мне нужен перекус перед стендапом!",
+                            "— Моя доска в Jira сломалась, боты всё спамят!"
+                        ],
+                        choices: [
+                            { text: "🛠 Починить Jira и настроить защиту от ботов", action: "wolf-fix" },
+                            { text: "→ Проигнорировать и пойти дальше", action: "wolf-ignore" },
+                            { text: "📖 Научить Волка работать вместе с AI", action: "wolf-teach" }
+                        ]
+                    },
+                    bear: {
+                        story: ["В коворкинге WeWork вас встречает <span class=\"character\">Медведь-Инвестор</span>. Раньше он был венчурным капиталистом в Кремниевой долине, теперь торгует крипто-NFT с котиками."],
+                        dialogue: [
+                            "<span class=\"character\">— Колобок! Ты выглядишь как прибыльный стартап!</span> — ревёт Медведь. — Давай запустим ICO: Kolobok Coin!"
+                        ],
+                        choices: [
+                            { text: "✕ Вежливо отказаться от ICO", action: "bear-refuse" },
+                            { text: "💰 Согласиться — лёгкие деньги!", action: "bear-accept" },
+                            { text: "💡 Предложить инвестировать в социальные проекты", action: "bear-counter" }
+                        ]
+                    },
+                    fox: {
+                        story: ["У небоскрёба Salesforce Tower появляется <span class=\"character\">Лиса-CEO</span> — глава крупного AI-стартапа."],
+                        dialogue: [
+                            "<span class=\"character\">— О, Колобок!</span> — мурлычет она. — Я как раз ищу AI-консультанта. Иди ко мне в офис на 60-й этаж, я дам тебе последний фрагмент!"
+                        ],
+                        story2: [
+                            "Марийка шепчет: — Это ловушка!<br>Андрейка кивает: — Она хочет украсть твой код!"
+                        ],
+                        choices: [
+                            { text: "⬆ Пойти в офис к Лисе", scene: "scene-fox-trust" },
+                            { text: "🛡 Отказаться и попросить фрагмент здесь", scene: "scene-fox-refuse" },
+                            { text: "🧠 Пойти, но подготовить аварийный бэкап", scene: "scene-fox-smart" }
+                        ]
+                    },
+                    rabbitResult: {
+                        help: "Колобок за секунду оптимизирует маршрут Зайца на 40%!<br><span class=\"character\">— Спасибо!</span> — радуется Заяц. — Теперь я успею домой пораньше! Держите фрагмент.<br><div class=\"badge badge-success\">◈ Получен Фрагмент 1: Функция Смелости</div>",
+                        trick: "Вы убегаете от Зайца. Он грустно смотрит вам вслед.<br>Колобок качает головой: — Так мы не получим фрагмент…<br><div class=\"badge badge-fail\">✕ Фрагмент потерян</div>",
+                        talk: "Вы проводите полчаса, разговаривая с Зайцем о трудностях в IT. Он чувствует поддержку.<br><span class=\"character\">— Знаете что?</span> — говорит Заяц. — Я снова попробую найти работу по специальности. А вот ваш фрагмент!<br><div class=\"badge badge-success\">◈ Получен Фрагмент 1: Функция Смелости</div>"
+                    }
+                }
+            },
+            uk: {
+                headerLabel: "Інтерактивний квест",
+                headerTitle: "Цифровий Колобок 2.0",
+                statFragments: "◈ Фрагменти",
+                statKarma: "◆ Карма",
+                inventoryLabel: "Інвентар",
+                continueBtn: "→ Продовжити квест",
+                restartBtn: "Спробувати знову",
+                restartAgainBtn: "Зіграти ще раз",
+                fragmentsNames: {
+                    courage: "Функція Сміливості",
+                    wisdom: "Клас Мудрості",
+                    kindness: "Модуль Доброти"
+                },
+                scenes: {
+                    start: {
+                        story: [
+                            "Жили-були бекендер <span class=\"character\">Андрійко</span> та фронтендерка <span class=\"character\">Марійка</span>. Завдяки ШІ вони залишилися без роботи і сиділи у своїй студії в Сан-Франциско, понуро гортаючи вакансії на LinkedIn.",
+                            "— Слухай, — сказала Марійка, — давай спечемо колобок? Як у старій казці. Хоч настрій піднімемо.",
+                            "Вони замісили тісто із залишків вівсянки та протеїнового порошку, але Андрійко випадково запустив ШІ-скрипт через wifi духовки…"
+                        ],
+                        dialogue: [
+                            "Колобок викотився з духовки зі світними LED-очима!",
+                            "<span class=\"character\">— Дякую, що скомпілювали мене в реальність!</span> — пропищав він. — Я — Колобок 2.0! Допоможіть мені пройти квест, і я виконаю три ваші бажання!"
+                        ],
+                        choices: [
+                            { text: "✓ Погодитися допомогти Колобку", scene: "scene-quest-accept" },
+                            { text: "✕ Відмовитися — це ж божевілля", scene: "scene-quest-refuse" }
+                        ]
+                    },
+                    questAccept: {
+                        story: [
+                            "— Чудово! — зрадів Колобок. — Мені потрібно зібрати чотири фрагменти Коду Просвітлення. Перший тримає <span class=\"character\">Заяць-Тімлід</span> біля вашого будинку!",
+                            "Ви втрьох виходите на вулицю. Заяць сумно сидить із телефоном, працюючи кур'єром у DoorDash."
+                        ],
+                        dialogue: [
+                            "<span class=\"character\">— Колобок, я тебе з'їм!</span> — каже Заяць без ентузіазму. — Або хоча б відкушу шматочок."
+                        ],
+                        choices: [
+                            { text: "🤝 Допомогти Зайцю оптимізувати маршрут", action: "rabbit-help" },
+                            { text: "↗ Просто втекти від Зайця", action: "rabbit-trick" },
+                            { text: "💬 Поговорити з ним по душам", action: "rabbit-talk" }
+                        ]
+                    },
+                    wolf: {
+                        story: ["У станції BART вас чекає <span class=\"character\">Вовк-Скрам-Мастер</span> — агресивний, але нещасний. Він втратив команду, коли ШІ навчився вести спринти."],
+                        dialogue: [
+                            "<span class=\"character\">— Колобок, я тебе з'їм!</span> — ричить Вовк. — Мені потрібен перекус перед стендапом!",
+                            "— Моя дошка в Jira зламалася, боти все спамлять!"
+                        ],
+                        choices: [
+                            { text: "🛠 Полагодити Jira та налаштувати захист від ботів", action: "wolf-fix" },
+                            { text: "→ Проігнорувати та піти далі", action: "wolf-ignore" },
+                            { text: "📖 Навчити Вовка працювати разом зі ШІ", action: "wolf-teach" }
+                        ]
+                    },
+                    bear: {
+                        story: ["У коворкінгу WeWork вас зустрічає <span class=\"character\">Ведмідь-Інвестор</span>. Раніше він був венчурним капіталістом у Кремнієвій долині, тепер торгує крипто-NFT з котиками."],
+                        dialogue: [
+                            "<span class=\"character\">— Колобок! Ти виглядаєш як прибутковий стартап!</span> — реве Ведмідь. — Давай запустимо ICO: Kolobok Coin!"
+                        ],
+                        choices: [
+                            { text: "✕ Ввічливо відмовитися від ICO", action: "bear-refuse" },
+                            { text: "💰 Погодитися — легкі гроші!", action: "bear-accept" },
+                            { text: "💡 Запропонувати інвестувати в соціальні проєкти", action: "bear-counter" }
+                        ]
+                    },
+                    fox: {
+                        story: ["Біля хмарочоса Salesforce Tower з'являється <span class=\"character\">Лиса-CEO</span> — голова великого ШІ-стартапу."],
+                        dialogue: [
+                            "<span class=\"character\">— О, Колобок!</span> — муркоче вона. — Я якраз шукаю ШІ-консультанта. Йди до мене в офіс на 60-й поверх, я дам тобі останній фрагмент!"
+                        ],
+                        story2: [
+                            "Марійка шепоче: — Це пастка!<br>Андрійко киває: — Вона хоче вкрасти твій код!"
+                        ],
+                        choices: [
+                            { text: "⬆ Піти в офіс до Лиси", scene: "scene-fox-trust" },
+                            { text: "🛡 Відмовитися і попросити фрагмент тут", scene: "scene-fox-refuse" },
+                            { text: "🧠 Піти, але підготувати аварійний бекап", scene: "scene-fox-smart" }
+                        ]
+                    },
+                    rabbitResult: {
+                        help: "Колобок за секунду оптимізує маршрут Зайця на 40%!<br><span class=\"character\">— Дякую!</span> — радіє Заяць. — Тепер я встигну додому раніше! Тримайте фрагмент.<br><div class=\"badge badge-success\">◈ Отримано Фрагмент 1: Функція Сміливості</div>",
+                        trick: "Ви тікаєте від Зайця. Він сумно дивиться вам услід.<br>Колобок хитає головою: — Так ми не отримаємо фрагмент…<br><div class=\"badge badge-fail\">✕ Фрагмент втрачено</div>",
+                        talk: "Ви проводите півгодини, розмовляючи із Зайцем про труднощі в IT. Він відчуває підтримку.<br><span class=\"character\">— Знаєте що?</span> — каже Заяць. — Я знову спробую знайти роботу за спеціальністю. А ось ваш фрагмент!<br><div class=\"badge badge-success\">◈ Отримано Фрагмент 1: Функція Сміливості</div>"
+                    },
+                    wolfResult: {
+                        fix: "Колобок підключається до Jira і за три секунди налаштовує захист.<br><span class=\"character\">— Магія!</span> — захоплюється Вовк і протягує флешку.<br><div class=\"badge badge-success\">◈ Отримано Фрагмент 2: Клас Мудрості</div>",
+                        ignore: "Ви намагаєтеся пройти повз, але Вовк блокує шлях. У результаті доводиться допомогти, але Вовк ображений.<br>— Ладно, тримайте фрагмент, — бурмоче він. — Але могли б і по-доброму.<br><div class=\"badge badge-fail\">◈ Фрагмент отримано, але карма впала</div>",
+                        teach: "Ви проводите міні-воркшоп для Вовка, показуючи, як ШІ може бути помічником, а не заміною.<br><span class=\"character\">— Ви змінили моє життя!</span> — каже Вовк зі сльозами. — Ось фрагмент, і я приєднуюся до вас!<br><div class=\"badge badge-success\">◈ Отримано Фрагмент 2: Клас Мудрості</div><div class=\"badge badge-bonus\">+ Вовк став союзником</div>"
+                    },
+                    bearResult: {
+                        refuse: "— Дякую за пропозицію, — ввічливо каже Колобок, — але я не для продажу.<br>Ведмідь зітхає: — Шкода. Але поважаю твою позицію. Тримай фрагмент.<br><div class=\"badge badge-success\">◈ Отримано Фрагмент 3: Модуль Доброти</div>",
+                        accept: "Ви запускаєте ICO Kolobok Coin. Спочатку все йде добре, але потім проєкт крашиться, і Ведмідь втрачає гроші інвесторів.<br><span class=\"character\">— Я думав, ви чесні!</span> — реве розчарований Ведмідь і йде.<br><div class=\"badge badge-fail\">✕ Фрагмент втрачено. Репутація зіпсована.</div>",
+                        counter: "— А що якщо замість спекуляцій інвестувати в проєкти, які допомагають людям? — пропонуєте ви.<br>Ведмідь замислюється: — Знаєш… це ідея! Я вкладуся в EdTech для перенавчання IT-фахівців!<br><div class=\"badge badge-success\">◈ Отримано Фрагмент 3: Модуль Доброти</div><div class=\"badge badge-bonus\">+ Ведмідь став інвестором</div>"
+                    }
+                }
+            },
+            en: {
+                headerLabel: "Interactive Quest",
+                headerTitle: "Digital Kolobok 2.0",
+                statFragments: "◈ Fragments",
+                statKarma: "◆ Karma",
+                inventoryLabel: "Inventory",
+                continueBtn: "→ Continue Quest",
+                restartBtn: "Try Again",
+                restartAgainBtn: "Play Again",
+                fragmentsNames: {
+                    courage: "Courage Function",
+                    wisdom: "Wisdom Class",
+                    kindness: "Kindness Module"
+                },
+                scenes: {
+                    start: {
+                        story: [
+                            "Once upon a time, there lived <span class=\"character\">Andrey</span> the backender and <span class=\"character\">Mary</span> the frontender. Thanks to AI, they were left without work and sat in their San Francisco studio, gloomily scrolling through LinkedIn vacancies.",
+                            "— Listen, — Mary said, — let's bake a kolobok? Like in the old fairy tale. At least it'll cheer us up.",
+                            "They kneaded dough from leftover oatmeal and protein powder, but Andrey accidentally launched an AI script via the oven's wifi…"
+                        ],
+                        dialogue: [
+                            "Kolobok rolled out of the oven with glowing LED eyes!",
+                            "<span class=\"character\">— Thanks for compiling me into reality!</span> — he squeaked. — I am Kolobok 2.0! Help me complete the quest, and I will grant three of your wishes!"
+                        ],
+                        choices: [
+                            { text: "✓ Agree to help Kolobok", scene: "scene-quest-accept" },
+                            { text: "✕ Refuse — this is madness", scene: "scene-quest-refuse" }
+                        ]
+                    },
+                    questAccept: {
+                        story: [
+                            "— Great! — Kolobok rejoiced. — I need to collect four fragments of the Enlightenment Code. The first one is held by the <span class=\"character\">Rabbit-TeamLead</span> near your house!",
+                            "The three of you go outside. The Rabbit sits sadly with his phone, working as a DoorDash courier."
+                        ],
+                        dialogue: [
+                            "<span class=\"character\">— Kolobok, I'm going to eat you!</span> — the Rabbit says without enthusiasm. — Or at least take a bite."
+                        ],
+                        choices: [
+                            { text: "🤝 Help the Rabbit optimize his route", action: "rabbit-help" },
+                            { text: "↗ Just run away from the Rabbit", action: "rabbit-trick" },
+                            { text: "💬 Have a heart-to-heart talk", action: "rabbit-talk" }
+                        ]
+                    },
+                    wolf: {
+                        story: ["At the BART station, the <span class=\"character\">Wolf-Scrum-Master</span> awaits you — aggressive but unhappy. He lost his team when AI learned to run sprints."],
+                        dialogue: [
+                            "<span class=\"character\">— Kolobok, I'm going to eat you!</span> — growls the Wolf. — I need a snack before the standup!",
+                            "— My Jira board is broken, bots are spamming everything!"
+                        ],
+                        choices: [
+                            { text: "🛠 Fix Jira and set up bot protection", action: "wolf-fix" },
+                            { text: "→ Ignore and move on", action: "wolf-ignore" },
+                            { text: "📖 Teach the Wolf to work together with AI", action: "wolf-teach" }
+                        ]
+                    },
+                    bear: {
+                        story: ["In the WeWork co-working space, you are met by the <span class=\"character\">Bear-Investor</span>. He used to be a venture capitalist in Silicon Valley, now he trades crypto-NFTs with cats."],
+                        dialogue: [
+                            "<span class=\"character\">— Kolobok! You look like a profitable startup!</span> — roars the Bear. — Let's launch an ICO: Kolobok Coin!"
+                        ],
+                        choices: [
+                            { text: "✕ Politely decline the ICO", action: "bear-refuse" },
+                            { text: "💰 Agree — easy money!", action: "bear-accept" },
+                            { text: "💡 Suggest investing in social projects", action: "bear-counter" }
+                        ]
+                    },
+                    fox: {
+                        story: ["The <span class=\"character\">Fox-CEO</span> — head of a large AI startup — appears at the Salesforce Tower."],
+                        dialogue: [
+                            "<span class=\"character\">— Oh, Kolobok!</span> — she purrs. — I'm looking for an AI consultant. Come to my office on the 60th floor, I'll give you the last fragment!"
+                        ],
+                        story2: [
+                            "Mary whispers: — It's a trap!<br>Andrey nods: — She wants to steal your code!"
+                        ],
+                        choices: [
+                            { text: "⬆ Go to the Fox's office", scene: "scene-fox-trust" },
+                            { text: "🛡 Refuse and ask for the fragment here", scene: "scene-fox-refuse" },
+                            { text: "🧠 Go, but prepare an emergency backup", scene: "scene-fox-smart" }
+                        ]
+                    },
+                    rabbitResult: {
+                        help: "Kolobok optimizes the Rabbit's route by 40% in a second!<br><span class=\"character\">— Thank you!</span> — the Rabbit rejoices. — Now I'll be home earlier! Here's your fragment.<br><div class=\"badge badge-success\">◈ Obtained Fragment 1: Courage Function</div>",
+                        trick: "You run away from the Rabbit. He looks sadly after you.<br>Kolobok shakes his head: — We won't get the fragment this way…<br><div class=\"badge badge-fail\">✕ Fragment lost</div>",
+                        talk: "You spend half an hour talking to the Rabbit about the difficulties in IT. He feels supported.<br><span class=\"character\">— You know what?</span> — the Rabbit says. — I'll try to find a job in my field again. And here's your fragment!<br><div class=\"badge badge-success\">◈ Obtained Fragment 1: Courage Function</div>"
+                    },
+                    wolfResult: {
+                        fix: "Kolobok connects to Jira and sets up protection in three seconds.<br><span class=\"character\">— Magic!</span> — the Wolf is fascinated and hands over the flash drive.<br><div class=\"badge badge-success\">◈ Obtained Fragment 2: Wisdom Class</div>",
+                        ignore: "You try to pass by, but the Wolf blocks the way. Eventually, you have to help, but the Wolf is offended.<br>— Fine, here's your fragment, — he grunts. — But you could have been nicer.<br><div class=\"badge badge-fail\">◈ Fragment obtained, but karma fell</div>",
+                        teach: "You conduct a mini-workshop for the Wolf, showing how AI can be a helper, not a replacement.<br><span class=\"character\">— You've changed my life!</span> — says the Wolf with tears. — Here's the fragment, and I'm joining you!<br><div class=\"badge badge-success\">◈ Obtained Fragment 2: Wisdom Class</div><div class=\"badge badge-bonus\">+ Wolf became an ally</div>"
+                    },
+                    bearResult: {
+                        refuse: "— Thank you for the offer, — Kolobok says politely, — but I'm not for sale.<br>The Bear sighs: — Pity. But I respect your position. Here's your fragment.<br><div class=\"badge badge-success\">◈ Obtained Fragment 3: Kindness Module</div>",
+                        accept: "You launch the Kolobok Coin ICO. It goes well at first, but then the project crashes, and the Bear loses investors' money.<br><span class=\"character\">— I thought you were honest!</span> — the disappointed Bear roars and leaves.<br><div class=\"badge badge-fail\">✕ Fragment lost. Reputation ruined.</div>",
+                        counter: "— What if instead of speculation we invest in projects that help people? — you suggest.<br>The Bear thinks: — You know... that's an idea! I'll invest in EdTech for retraining IT specialists!<br><div class=\"badge badge-success\">◈ Obtained Fragment 3: Kindness Module</div><div class=\"badge badge-bonus\">+ Bear became an investor</div>"
+                    }
+                }
+            }
+        };
+
+        let gameState = { fragments: 0, karma: 0, choices: [], inventory: [], lang: 'ru' };
+
+        function setLanguage(lang) {
+            gameState.lang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
+            });
+            updateUI();
+        }
+
+        function updateUI() {
+            const t = translations[gameState.lang];
+
+            // Update static elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerHTML = t[key];
+            });
+
+            // Re-render current scene
+            const activeScene = document.querySelector('.scene.active');
+            if (activeScene) {
+                const sceneId = activeScene.id;
+                renderScene(sceneId);
+            }
+
+            updateStats();
+        }
+
+        function updateStats() {
+            const t = translations[gameState.lang];
+            document.getElementById("fragments").textContent = gameState.fragments;
+            document.getElementById("karma").textContent = gameState.karma;
+        }
+
+        function updateEndingText() {
+            const t = translations[gameState.lang];
+            const n = document.getElementById("neutral-text");
+            if (n) {
+                if (gameState.lang === 'ru') {
+                    n.innerHTML = gameState.karma >= 30
+                        ? `<p>Колобок собрал все фрагменты и стал разумным AI.</p><p>Ваша карма: <span class="ending-karma-val">${gameState.karma}</span></p><p>Вы создали стартап «Колобок & Друзья», но можно было поступить мудрее с Лисой.</p><p class="moral">Осторожность — это хорошо, но смелость открывает больше.</p>`
+                        : `<p>Колобок собрал фрагменты, но ваша карма — всего <span class="ending-karma-val">${gameState.karma}</span>.</p><p>Вы получили желания, но многие герои разочарованы вашими решениями.</p><p class="moral">Успех без доброты — пустой успех.</p>`;
+                } else if (gameState.lang === 'uk') {
+                    n.innerHTML = gameState.karma >= 30
+                        ? `<p>Колобок зібрав усі фрагменти і став розумним ШІ.</p><p>Ваша карма: <span class="ending-karma-val">${gameState.karma}</span></p><p>Ви створили стартап «Колобок & Друзі», але можна було вчинити мудріше з Лисицею.</p><p class="moral">Обережність — це добре, але сміливість відкриває більше.</p>`
+                        : `<p>Колобок зібрав фрагменти, але ваша карма — всього <span class="ending-karma-val">${gameState.karma}</span>.</p><p>Ви отримали бажання, але багато героїв розчаровані вашими рішеннями.</p><p class="moral">Успіх без доброти — порожній успіх.</p>`;
+                } else {
+                    n.innerHTML = gameState.karma >= 30
+                        ? `<p>Kolobok collected all fragments and became a sentient AI.</p><p>Your karma: <span class="ending-karma-val">${gameState.karma}</span></p><p>You created the startup "Kolobok & Friends", but you could have acted more wisely with the Fox.</p><p class="moral">Caution is good, but courage opens more doors.</p>`
+                        : `<p>Kolobok collected fragments, but your karma is only <span class="ending-karma-val">${gameState.karma}</span>.</p><p>You got your wishes, but many heroes are disappointed by your decisions.</p><p class="moral">Success without kindness is an empty success.</p>`;
+                }
+            }
+            const b = document.getElementById("best-ending-text");
+            if (b) {
+                if (gameState.lang === 'ru') {
+                    b.innerHTML = gameState.karma >= 50
+                        ? `<p>Колобок стал по-настоящему разумным AI. Ваша карма: <span class="ending-karma-val">${gameState.karma}</span></p><p style="text-align:left;margin-top:14px;line-height:1.8;">Вы создали «Колобок & Друзья» — стартап для программистов.<br>Колобок работает с людьми, а не вместо них.<br>Заяц, Волк и Медведь нашли новые призвания.</p><p class="moral">Доброта, смелость и мудрость — вот настоящий код успеха.</p>`
+                        : `<p>Колобок спасён, но ваша карма всего <span class="ending-karma-val">${gameState.karma}</span>.</p><p>Вы получили желания, но не все герои довольны вашим путём.</p><p class="moral">Ум без доброты — неполная мудрость.</p>`;
+                } else if (gameState.lang === 'uk') {
+                    b.innerHTML = gameState.karma >= 50
+                        ? `<p>Колобок став по-справжньому розумним ШІ. Ваша карма: <span class="ending-karma-val">${gameState.karma}</span></p><p style="text-align:left;margin-top:14px;line-height:1.8;">Ви створили «Колобок & Друзі» — стартап для програмістів.<br>Колобок працює з людьми, а не замість них.<br>Заяць, Вовк і Ведмідь знайшли нові покликання.</p><p class="moral">Доброта, сміливість і мудрість — ось справжній код успіху.</p>`
+                        : `<p>Колобок врятований, але ваша карма всього <span class="ending-karma-val">${gameState.karma}</span>.</p><p>Ви отримали бажання, але не всі герої задоволені вашим шляхом.</p><p class="moral">Розум без доброти — неповна мудрість.</p>`;
+                } else {
+                    b.innerHTML = gameState.karma >= 50
+                        ? `<p>Kolobok became a truly sentient AI. Your karma: <span class="ending-karma-val">${gameState.karma}</span></p><p style="text-align:left;margin-top:14px;line-height:1.8;">You created "Kolobok & Friends" — a startup for programmers.<br>Kolobok works with people, not instead of them.<br>Rabbit, Wolf, and Bear found new callings.</p><p class="moral">Kindness, courage, and wisdom — that's the real code of success.</p>`
+                        : `<p>Kolobok is saved, but your karma is only <span class="ending-karma-val">${gameState.karma}</span>.</p><p>You got your wishes, but not all heroes are happy with your path.</p><p class="moral">Intelligence without kindness is incomplete wisdom.</p>`;
+                }
+            }
+        }
+
+        function goToScene(id) {
+            document.querySelectorAll(".scene").forEach(s => s.classList.remove("active"));
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.add("active");
+                renderScene(id);
+            }
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            if (id === "scene-fox-refuse" || id === "scene-fox-smart") updateEndingText();
+        }
+
+        function renderScene(id) {
+            const t = translations[gameState.lang];
+            const sceneKey = id.replace("scene-", "").replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+            const sceneData = t.scenes[sceneKey];
+            if (!sceneData) return;
+
+            const sceneEl = document.getElementById(id);
+            if (!sceneEl) return;
+
+            // Render story
+            const storyContainer = sceneEl.querySelector(".story-text");
+            if (storyContainer && sceneData.story) {
+                storyContainer.innerHTML = sceneData.story.map(p => `<p>${p}</p>`).join("");
+                if (sceneData.story2) {
+                    storyContainer.innerHTML += sceneData.story2.map(p => `<p>${p}</p>`).join("");
+                }
+            }
+
+            // Render dialogue
+            const dialogueContainer = sceneEl.querySelector(".dialogue-box");
+            if (dialogueContainer && sceneData.dialogue) {
+                dialogueContainer.innerHTML = sceneData.dialogue.map(p => `<p>${p}</p>`).join("");
+            }
+
+            // Render choices
+            const choiceContainer = sceneEl.querySelector(".choices");
+            if (choiceContainer && sceneData.choices) {
+                choiceContainer.innerHTML = sceneData.choices.map(c => {
+                    if (c.scene) {
+                        return `<button class="choice-btn" onclick="goToScene('${c.scene}')">${c.text}</button>`;
+                    } else if (c.action) {
+                        return `<button class="choice-btn" onclick="makeChoice('${c.action}', ${c.action.includes('trick') || c.action.includes('ignore') || c.action.includes('accept') ? -10 : 10})">${c.text}</button>`;
+                    }
+                    return "";
+                }).join("");
+            }
+        }
+
+        function makeChoice(choice, karma) {
+            gameState.karma += karma;
+            gameState.choices.push(choice);
+            updateStats();
+            if (choice.startsWith("rabbit")) handleRabbit(choice);
+            else if (choice.startsWith("wolf")) handleWolf(choice);
+            else if (choice.startsWith("bear")) handleBear(choice);
+        }
+
+        function handleRabbit(c) {
+            const t = translations[gameState.lang];
+            const el = document.getElementById("rabbit-result-text");
+            if (c === "rabbit-help") {
+                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.courage);
+                el.innerHTML = t.scenes.rabbitResult.help;
+            } else if (c === "rabbit-trick") {
+                el.innerHTML = t.scenes.rabbitResult.trick;
+            } else {
+                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.courage);
+                el.innerHTML = t.scenes.rabbitResult.talk;
+            }
+            updateInventory("inventory-list"); updateStats(); goToScene("scene-rabbit-result");
+        }
+
+        function handleWolf(c) {
+            const t = translations[gameState.lang];
+            const el = document.getElementById("wolf-result-text");
+            if (c === "wolf-fix") {
+                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.wisdom);
+                el.innerHTML = t.scenes.wolfResult.fix;
+            } else if (c === "wolf-ignore") {
+                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.wisdom);
+                el.innerHTML = t.scenes.wolfResult.ignore;
+            } else {
+                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.wisdom);
+                el.innerHTML = t.scenes.wolfResult.teach;
+            }
+            updateInventory("wolf-inventory-list"); updateStats(); goToScene("scene-wolf-result");
+        }
+
+        function handleBear(c) {
+            const t = translations[gameState.lang];
+            const el = document.getElementById("bear-result-text");
+            if (c === "bear-refuse") {
+                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.kindness);
+                el.innerHTML = t.scenes.bearResult.refuse;
+            } else if (c === "bear-accept") {
+                el.innerHTML = t.scenes.bearResult.accept;
+            } else {
+                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.kindness);
+                el.innerHTML = t.scenes.bearResult.counter;
+            }
+            updateInventory("bear-inventory-list"); updateStats(); goToScene("scene-bear-result");
+        }
+
+        function updateInventory(id) {
+            document.getElementById(id).innerHTML = gameState.inventory
+                .map(i => `<div class="fragment-tag">◈ ${i}</div>`).join("");
+        }
+
+        function restart() {
+            gameState.fragments = 0; gameState.karma = 0; gameState.choices = []; gameState.inventory = [];
+            updateStats();
+            document.getElementById("inventory-list").innerHTML = "";
+            document.getElementById("wolf-inventory-list").innerHTML = "";
+            document.getElementById("bear-inventory-list").innerHTML = "";
+            goToScene("scene-start");
+        }
+
+        // Initial render
+        updateUI();
+        goToScene("scene-start");
+    </script>
+</body>
+
+</html>
