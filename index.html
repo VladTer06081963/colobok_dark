@@ -663,21 +663,22 @@
             .illustration {
                 height: 170px;
             }
-            
+
             /* Адаптация длинных текстов для мобильных */
-            .story-text p, .dialogue p {
+            .story-text p,
+            .dialogue p {
                 word-wrap: break-word;
                 overflow-wrap: break-word;
                 hyphens: auto;
             }
-            
+
             .choice-btn {
                 font-size: 0.85em;
                 padding: 12px 16px;
                 word-wrap: break-word;
                 overflow-wrap: break-word;
             }
-            
+
             .ending-box p {
                 word-wrap: break-word;
                 overflow-wrap: break-word;
@@ -699,10 +700,9 @@
             <div class="header-label">Интерактивный квест</div>
             <h1>Цифровой Колобок 2.0</h1>
             <div class="stats">
-                <div class="stat"><span>◈ Фрагменты</span> <span class="stat-val"><span
-                            id="fragments">0</span> / 4</span></div>
-                <div class="stat"><span>◆ Карма</span> <span class="stat-val"><span
-                            id="karma">0</span></span></div>
+                <div class="stat"><span>◈ Фрагменты</span> <span class="stat-val"><span id="fragments">0</span> /
+                        4</span></div>
+                <div class="stat"><span>◆ Карма</span> <span class="stat-val"><span id="karma">0</span></span></div>
             </div>
         </div>
 
@@ -1826,7 +1826,7 @@
 
         function setLanguage(lang) {
             gameState.lang = lang;
-            
+
             // Обновляем заголовок страницы
             const titles = {
                 ru: "Цифровой Колобок: Интерактивный Квест",
@@ -1834,10 +1834,10 @@
                 en: "Digital Kolobok: Interactive Quest"
             };
             document.title = titles[lang];
-            
+
             // Обновляем lang атрибут HTML
             document.documentElement.lang = lang;
-            
+
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
             });
@@ -1850,24 +1850,24 @@
             // Обновляем статические элементы напрямую (без data-i18n)
             document.querySelector('.header-label').textContent = t.headerLabel;
             document.querySelector('.header h1').textContent = t.headerTitle;
-            
+
             // Обновляем статистику
             const stats = document.querySelectorAll('.stat');
             if (stats[0]) stats[0].childNodes[0].textContent = t.statFragments + ' ';
             if (stats[1]) stats[1].childNodes[0].textContent = t.statKarma + ' ';
-            
+
             // Обновляем метки инвентаря
             document.querySelectorAll('.inventory-label').forEach(el => {
                 el.textContent = t.inventoryLabel;
             });
-            
+
             // Обновляем кнопки продолжения
             document.querySelectorAll('.choice-btn').forEach(btn => {
                 if (btn.textContent.includes('Продолж') || btn.textContent.includes('Continue') || btn.textContent.includes('Продовж')) {
                     btn.innerHTML = '<span class="choice-icon">→</span> ' + t.continueBtn;
                 }
             });
-            
+
             // Обновляем кнопки рестарта
             document.querySelectorAll('.restart-btn').forEach(btn => {
                 if (btn.getAttribute('onclick') === 'restart()') {
