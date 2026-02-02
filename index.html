@@ -918,7 +918,7 @@
             </div>
             <div class="choices">
                 <button class="choice-btn" onclick="goToScene('scene-wolf')"><span class="choice-icon">→</span>
-                    <span>→ Продолжить квест</span></button>
+                    <span data-i18n="continueBtn">Продолжить квест</span></button>
             </div>
         </div>
 
@@ -989,7 +989,7 @@
             </div>
             <div class="choices">
                 <button class="choice-btn" onclick="goToScene('scene-bear')"><span class="choice-icon">→</span>
-                    <span>→ Продолжить квест</span></button>
+                    <span data-i18n="continueBtn">Продолжить квест</span></button>
             </div>
         </div>
 
@@ -1054,7 +1054,7 @@
             </div>
             <div class="choices">
                 <button class="choice-btn" onclick="goToScene('scene-fox')"><span class="choice-icon">→</span>
-                    <span>→ Продолжить квест</span></button>
+                    <span data-i18n="continueBtn">Продолжить квест</span></button>
             </div>
         </div>
 
@@ -1325,7 +1325,7 @@
                 statFragments: "◈ Фрагменты",
                 statKarma: "◆ Карма",
                 inventoryLabel: "Инвентарь",
-                continueBtn: "→ Продолжить квест",
+                continueBtn: "Продолжить квест",
                 restartBtn: "Попробовать снова",
                 restartAgainBtn: "Сыграть ещё раз",
                 fragmentsNames: {
@@ -1338,7 +1338,7 @@
                         story: [
                             "Жили-были бекэндер <span class=\"character\">Андрейка</span> и фронтэндерша <span class=\"character\">Марийка</span>. Благодаря ИИ они остались без работы и сидели в своей студии в Сан-Франциско, уныло листая вакансии на LinkedIn.",
                             "— Слушай, — сказала Марийка, — давай испечём колобок? Как в старой сказке. Хоть настроение поднимем.",
-                            "Они замесили тесто из остатков овсянки и протеинового порошка, но Андрейка случайно запустил AI-скрипт через wifi духовки…"
+                            "Они замесили тесто из остатков овсянки и протеинового порошка, но Андрейка случайно запустил AI-скрипт через Wi-Fi духовки…"
                         ],
                         dialogue: [
                             "Колобок выкатился из духовки с светящимися LED-глазками!",
@@ -1459,31 +1459,6 @@
                         endingText: "Иногда магия требует смелости. Вы упустили шанс на приключение.",
                         moral: "Может быть, в следующий раз повезёт больше."
                     }
-                },
-                endings: {
-                    neutralHigh: {
-                        line1: "Колобок собрал все фрагменты и стал разумным AI.",
-                        line2: "Ваша карма: ",
-                        line3: "Вы создали стартап «Колобок & Друзья», но можно было поступить мудрее с Лисой.",
-                        moral: "Осторожность — это хорошо, но смелость открывает больше."
-                    },
-                    neutralLow: {
-                        line1: "Колобок собрал фрагменты, но ваша карма — всего ",
-                        line2: "Вы получили желания, но многие герои разочарованы вашими решениями.",
-                        moral: "Успех без доброты — пустой успех."
-                    },
-                    bestHigh: {
-                        line1: "Колобок стал по-настоящему разумным AI. Ваша карма: ",
-                        line2: "Вы создали «Колобок & Друзья» — стартап для программистов.",
-                        line3: "Колобок работает с людьми, а не вместо них.",
-                        line4: "Заяц, Волк и Медведь нашли новые призвания.",
-                        moral: "Доброта, смелость и мудрость — вот настоящий код успеха."
-                    },
-                    bestLow: {
-                        line1: "Колобок спасён, но ваша карма всего ",
-                        line2: "Вы получили желания, но не все герои довольны вашим путём.",
-                        moral: "Ум без доброты — неполная мудрость."
-                    }
                 }
             },
             uk: {
@@ -1492,7 +1467,7 @@
                 statFragments: "◈ Фрагменти",
                 statKarma: "◆ Карма",
                 inventoryLabel: "Інвентар",
-                continueBtn: "→ Продовжити квест",
+                continueBtn: "Продовжити квест",
                 restartBtn: "Спробувати знову",
                 restartAgainBtn: "Зіграти ще раз",
                 fragmentsNames: {
@@ -1505,7 +1480,7 @@
                         story: [
                             "Жили-були бекендер <span class=\"character\">Андрійко</span> та фронтендерка <span class=\"character\">Марійка</span>. Завдяки ШІ вони залишилися без роботи і сиділи у своїй студії в Сан-Франциско, понуро гортаючи вакансії на LinkedIn.",
                             "— Слухай, — сказала Марійка, — давай спечемо колобок? Як у старій казці. Хоч настрій піднімемо.",
-                            "Вони замісили тісто із залишків вівсянки та протеїнового порошку, але Андрійко випадково запустив ШІ-скрипт через wifi духовки…"
+                            "Вони замісили тісто із залишків вівсянки та протеїнового порошку, але Андрійко випадково запустив ШІ-скрипт через Wi-Fi духовки…"
                         ],
                         dialogue: [
                             "Колобок викотився з духовки зі світними LED-очима!",
@@ -1518,11 +1493,11 @@
                     },
                     questAccept: {
                         story: [
-                            "— Чудово! — зрадів Колобок. — Мені потрібно зібрати чотири фрагменти Коду Просвітлення. Перший тримає <span class=\"character\">Заяць-Тімлід</span> біля вашого будинку!",
-                            "Ви втрьох виходите на вулицю. Заяць сумно сидить із телефоном, працюючи кур'єром у DoorDash."
+                            "— Чудово! — зрадів Колобок. — Мені потрібно зібрати чотири фрагменти Коду Просвітлення. Перший тримає <span class=\"character\">Заєць-Тімлід</span> біля вашого будинку!",
+                            "Ви втрьох виходите на вулицю. Заєць сумно сидить із телефоном, працюючи кур'єром у DoorDash."
                         ],
                         dialogue: [
-                            "<span class=\"character\">— Колобок, я тебе з'їм!</span> — каже Заяць без ентузіазму. — Або хоча б відкушу шматочок."
+                            "<span class=\"character\">— Колобок, я тебе з'їм!</span> — каже Заєць без ентузіазму. — Або хоча б відкушу шматочок."
                         ],
                         choices: [
                             { text: "🤝 Допомогти Зайцю оптимізувати маршрут", action: "rabbit-help" },
@@ -1568,9 +1543,9 @@
                         ]
                     },
                     rabbitResult: {
-                        help: "Колобок за секунду оптимізує маршрут Зайця на 40%!<br><span class=\"character\">— Дякую!</span> — радіє Заяць. — Тепер я встигну додому раніше! Тримайте фрагмент.<br><div class=\"badge badge-success\">◈ Отримано Фрагмент 1: Функція Сміливості</div>",
+                        help: "Колобок за секунду оптимізує маршрут Зайця на 40%!<br><span class=\"character\">— Дякую!</span> — радіє Заєць. — Тепер я встигну додому раніше! Тримайте фрагмент.<br><div class=\"badge badge-success\">◈ Отримано Фрагмент 1: Функція Сміливості</div>",
                         trick: "Ви тікаєте від Зайця. Він сумно дивиться вам услід.<br>Колобок хитає головою: — Так ми не отримаємо фрагмент…<br><div class=\"badge badge-fail\">✕ Фрагмент втрачено</div>",
-                        talk: "Ви проводите півгодини, розмовляючи із Зайцем про труднощі в IT. Він відчуває підтримку.<br><span class=\"character\">— Знаєте що?</span> — каже Заяць. — Я знову спробую знайти роботу за спеціальністю. А ось ваш фрагмент!<br><div class=\"badge badge-success\">◈ Отримано Фрагмент 1: Функція Сміливості</div>"
+                        talk: "Ви проводите півгодини, розмовляючи із Зайцем про труднощі в IT. Він відчуває підтримку.<br><span class=\"character\">— Знаєте що?</span> — каже Заєць. — Я знову спробую знайти роботу за спеціальністю. А ось ваш фрагмент!<br><div class=\"badge badge-success\">◈ Отримано Фрагмент 1: Функція Сміливості</div>"
                     },
                     wolfResult: {
                         fix: "Колобок підключається до Jira і за три секунди налаштовує захист.<br><span class=\"character\">— Магія!</span> — захоплюється Вовк і протягує флешку.<br><div class=\"badge badge-success\">◈ Отримано Фрагмент 2: Клас Мудрості</div>",
@@ -1611,7 +1586,7 @@
                             "— Ні, — каже Колобок. — Це backup strategy. Давай фрагмент і не роби вигляд."
                         ],
                         endingTitle: "Ідеальна кінцівка",
-                        endingTextGood: "Ви створили «Колобок & Друзі» — стартап для програмістів.<br>Колобок працює з людьми, а не замість них.<br>Заяць, Вовк і Ведмідь знайшли нові покликання.",
+                        endingTextGood: "Ви створили «Колобок & Друзі» — стартап для програмістів.<br>Колобок працює з людьми, а не замість них.<br>Заєць, Вовк і Ведмідь знайшли нові покликання.",
                         endingTextBad: "Ви отримали бажання, але не всі герої задоволені вашим шляхом.",
                         moralGood: "Доброта, сміливість і мудрість — ось справжній код успіху.",
                         moralBad: "Розум без доброти — неповна мудрість."
@@ -1626,31 +1601,6 @@
                         endingText: "Іноді магія вимагає сміливості. Ви упустили шанс на пригоду.",
                         moral: "Можливо, наступного разу пощастить більше."
                     }
-                },
-                endings: {
-                    neutralHigh: {
-                        line1: "Колобок зібрав усі фрагменти і став розумним ШІ.",
-                        line2: "Ваша карма: ",
-                        line3: "Ви створили стартап «Колобок & Друзі», але можна було вчинити мудріше з Лисицею.",
-                        moral: "Обережність — це добре, але сміливість відкриває більше."
-                    },
-                    neutralLow: {
-                        line1: "Колобок зібрав фрагменти, але ваша карма — всього ",
-                        line2: "Ви отримали бажання, але багато героїв розчаровані вашими рішеннями.",
-                        moral: "Успіх без доброти — порожній успіх."
-                    },
-                    bestHigh: {
-                        line1: "Колобок став по-справжньому розумним ШІ. Ваша карма: ",
-                        line2: "Ви створили «Колобок & Друзі» — стартап для програмістів.",
-                        line3: "Колобок працює з людьми, а не замість них.",
-                        line4: "Заяць, Вовк і Ведмідь знайшли нові покликання.",
-                        moral: "Доброта, сміливість і мудрість — ось справжній код успіху."
-                    },
-                    bestLow: {
-                        line1: "Колобок врятований, але ваша карма всього ",
-                        line2: "Ви отримали бажання, але не всі герої задоволені вашим шляхом.",
-                        moral: "Розум без доброти — неповна мудрість."
-                    }
                 }
             },
             en: {
@@ -1659,20 +1609,20 @@
                 statFragments: "◈ Fragments",
                 statKarma: "◆ Karma",
                 inventoryLabel: "Inventory",
-                continueBtn: "→ Continue Quest",
+                continueBtn: "Continue Quest",
                 restartBtn: "Try Again",
                 restartAgainBtn: "Play Again",
                 fragmentsNames: {
-                    courage: "Courage Function",
-                    wisdom: "Wisdom Class",
-                    kindness: "Kindness Module"
+                    courage: "Function of Courage",
+                    wisdom: "Class of Wisdom",
+                    kindness: "Module of Kindness"
                 },
                 scenes: {
                     start: {
                         story: [
                             "Once upon a time, there lived <span class=\"character\">Andrey</span> the backender and <span class=\"character\">Mary</span> the frontender. Thanks to AI, they were left without work and sat in their San Francisco studio, gloomily scrolling through LinkedIn vacancies.",
                             "— Listen, — Mary said, — let's bake a kolobok? Like in the old fairy tale. At least it'll cheer us up.",
-                            "They kneaded dough from leftover oatmeal and protein powder, but Andrey accidentally launched an AI script via the oven's wifi…"
+                            "They kneaded dough from leftover oatmeal and protein powder, but Andrey accidentally launched an AI script via the oven's Wi-Fi…"
                         ],
                         dialogue: [
                             "Kolobok rolled out of the oven with glowing LED eyes!",
@@ -1793,36 +1743,68 @@
                         endingText: "Sometimes magic requires courage. You missed the chance for an adventure.",
                         moral: "Maybe next time you'll have more luck."
                     }
-                },
-                endings: {
-                    neutralHigh: {
-                        line1: "Kolobok collected all fragments and became a sentient AI.",
-                        line2: "Your karma: ",
-                        line3: "You created the startup 'Kolobok & Friends', but you could have acted more wisely with the Fox.",
-                        moral: "Caution is good, but courage opens more doors."
-                    },
-                    neutralLow: {
-                        line1: "Kolobok collected fragments, but your karma is only ",
-                        line2: "You got your wishes, but many heroes are disappointed by your decisions.",
-                        moral: "Success without kindness is an empty success."
-                    },
-                    bestHigh: {
-                        line1: "Kolobok became a truly sentient AI. Your karma: ",
-                        line2: "You created 'Kolobok & Friends' — a startup for programmers.",
-                        line3: "Kolobok works with people, not instead of them.",
-                        line4: "Rabbit, Wolf, and Bear found new callings.",
-                        moral: "Kindness, courage, and wisdom — that's the real code of success."
-                    },
-                    bestLow: {
-                        line1: "Kolobok is saved, but your karma is only ",
-                        line2: "You got your wishes, but not all heroes are happy with your path.",
-                        moral: "Intelligence without kindness is incomplete wisdom."
-                    }
                 }
             }
         };
 
-        let gameState = { fragments: 0, karma: 0, choices: [], inventory: [], lang: 'ru' };
+        const endingTranslations = {
+            ru: {
+                neutralHigh: {
+                    text: `<p>Колобок собрал все фрагменты и стал разумным AI.</p><p>Ваша карма: <span class="ending-karma-val">{karma}</span></p><p>Вы создали стартап «Колобок & Друзья», но можно было поступить мудрее с Лисой.</p>`,
+                    moral: "Осторожность — это хорошо, но смелость открывает больше."
+                },
+                neutralLow: {
+                    text: `<p>Колобок собрал фрагменты, но ваша карма — всего <span class="ending-karma-val">{karma}</span>.</p><p>Вы получили желания, но многие герои разочарованы вашими решениями.</p>`,
+                    moral: "Успех без доброты — пустой успех."
+                },
+                bestHigh: {
+                    text: `<p>Колобок стал по-настоящему разумным AI. Ваша карма: <span class="ending-karma-val">{karma}</span></p><p style="text-align:left;margin-top:14px;line-height:1.8;">Вы создали «Колобок & Друзья» — стартап для программистов.<br>Колобок работает с людьми, а не вместо них.<br>Заяц, Волк и Медведь нашли новые призвания.</p>`,
+                    moral: "Доброта, смелость и мудрость — вот настоящий код успеха."
+                },
+                bestLow: {
+                    text: `<p>Колобок спасён, но ваша карма всего <span class="ending-karma-val">{karma}</span>.</p><p>Вы получили желания, но не все герои довольны вашим путём.</p>`,
+                    moral: "Ум без доброты — неполная мудрость."
+                }
+            },
+            uk: {
+                neutralHigh: {
+                    text: `<p>Колобок зібрав усі фрагменти і став розумним ШІ.</p><p>Ваша карма: <span class="ending-karma-val">{karma}</span></p><p>Ви створили стартап «Колобок & Друзі», але можна було вчинити мудріше з Лисицею.</p>`,
+                    moral: "Обережність — це добре, але сміливість відкриває більше."
+                },
+                neutralLow: {
+                    text: `<p>Колобок зібрав фрагменти, но ваша карма — всього <span class="ending-karma-val">{karma}</span>.</p><p>Ви отримали бажання, але багато героїв розчаровані вашими рішеннями.</p>`,
+                    moral: "Успіх без доброти — порожній успіх."
+                },
+                bestHigh: {
+                    text: `<p>Колобок став по-справжньому розумним ШІ. Ваша карма: <span class="ending-karma-val">{karma}</span></p><p style="text-align:left;margin-top:14px;line-height:1.8;">Ви створили «Колобок & Друзі» — стартап для програмістів.<br>Колобок працює з людьми, а не замість них.<br>Заєць, Вовк і Ведмідь знайшли нові покликання.</p>`,
+                    moral: "Доброта, сміливість і мудрість — ось справжній код успіху."
+                },
+                bestLow: {
+                    text: `<p>Колобок врятований, але ваша карма всього <span class="ending-karma-val">{karma}</span>.</p><p>Ви отримали бажання, але не всі герої задоволені вашим шляхом.</p>`,
+                    moral: "Розум без доброти — неповна мудрость."
+                }
+            },
+            en: {
+                neutralHigh: {
+                    text: `<p>Kolobok collected all fragments and became a sentient AI.</p><p>Your karma: <span class="ending-karma-val">{karma}</span></p><p>You created the startup "Kolobok & Friends", but you could have acted more wisely with the Fox.</p>`,
+                    moral: "Caution is good, but courage opens more doors."
+                },
+                neutralLow: {
+                    text: `<p>Kolobok collected fragments, but your karma is only <span class="ending-karma-val">{karma}</span>.</p><p>You got your wishes, but many heroes are disappointed by your decisions.</p>`,
+                    moral: "Success without kindness is an empty success."
+                },
+                bestHigh: {
+                    text: `<p>Kolobok became a truly sentient AI. Your karma: <span class="ending-karma-val">{karma}</span></p><p style="text-align:left;margin-top:14px;line-height:1.8;">You created "Kolobok & Friends" — a startup for programmers.<br>Kolobok works with people, not instead of them.<br>Rabbit, Wolf, and Bear found new callings.</p>`,
+                    moral: "Kindness, courage, and wisdom — that's the real code of success."
+                },
+                bestLow: {
+                    text: `<p>Kolobok is saved, but your karma is only <span class="ending-karma-val">{karma}</span>.</p><p>You got your wishes, but not all heroes are happy with your path.</p>`,
+                    moral: "Intelligence without kindness is incomplete wisdom."
+                }
+            }
+        };
+
+        let gameState = { fragments: 0, karma: 0, choices: [], inventoryKeys: [], lang: 'ru', lastChoice: null };
 
         function setLanguage(lang) {
             gameState.lang = lang;
@@ -1879,17 +1861,26 @@
                 }
             });
 
-            // Переводим инвентарь
-            translateInventory();
+            // Re-render current inventory
+            document.querySelectorAll(".inventory-items").forEach(el => {
+                if (el.id) updateInventory(el.id);
+            });
 
             // Re-render current scene
             const activeScene = document.querySelector('.scene.active');
             if (activeScene) {
                 const sceneId = activeScene.id;
                 renderScene(sceneId);
+                // Update specific endings if they are active
+                if (sceneId === "scene-fox-refuse" || sceneId === "scene-fox-smart") {
+                    updateEndingText();
+                }
             }
 
             updateStats();
+            document.querySelectorAll(".inventory-items").forEach(el => {
+                if (el.id) updateInventory(el.id);
+            });
         }
 
         function updateStats() {
@@ -1899,23 +1890,20 @@
         }
 
         function updateEndingText() {
-            const t = translations[gameState.lang];
-            const e = t.scenes.endings;
+            const et = endingTranslations[gameState.lang];
+
             const n = document.getElementById("neutral-text");
-            if (n && e) {
-                const isHighKarma = gameState.karma >= 30;
-                const ending = isHighKarma ? e.neutralHigh : e.neutralLow;
-                n.innerHTML = isHighKarma
-                    ? `<p>${ending.line1}</p><p>${ending.line2}<span class="ending-karma-val">${gameState.karma}</span></p><p>${ending.line3}</p><p class="moral">${ending.moral}</p>`
-                    : `<p>${ending.line1}<span class="ending-karma-val">${gameState.karma}</span>.</p><p>${ending.line2}</p><p class="moral">${ending.moral}</p>`;
+            if (n) {
+                const type = (gameState.karma >= 20 && gameState.fragments >= 3) ? 'neutralHigh' : 'neutralLow';
+                n.innerHTML = et[type].text.replace('{karma}', gameState.karma) +
+                    `<p class="moral">${et[type].moral}</p>`;
             }
+
             const b = document.getElementById("best-ending-text");
-            if (b && e) {
-                const isHighKarma = gameState.karma >= 50;
-                const ending = isHighKarma ? e.bestHigh : e.bestLow;
-                b.innerHTML = isHighKarma
-                    ? `<p>${ending.line1}<span class="ending-karma-val">${gameState.karma}</span></p><p style="text-align:left;margin-top:14px;line-height:1.8;">${ending.line2}<br>${ending.line3}<br>${ending.line4}</p><p class="moral">${ending.moral}</p>`
-                    : `<p>${ending.line1}<span class="ending-karma-val">${gameState.karma}</span>.</p><p>${ending.line2}</p><p class="moral">${ending.moral}</p>`;
+            if (b) {
+                const type = (gameState.karma >= 30 && gameState.fragments >= 3) ? 'bestHigh' : 'bestLow';
+                b.innerHTML = et[type].text.replace('{karma}', gameState.karma) +
+                    `<p class="moral">${et[type].moral}</p>`;
             }
         }
 
@@ -1927,7 +1915,7 @@
                 renderScene(id);
             }
             window.scrollTo({ top: 0, behavior: "smooth" });
-            if (id === "scene-fox-refuse" || id === "scene-fox-smart") updateEndingText();
+            if (id.includes("-result") || id === "scene-fox-refuse" || id === "scene-fox-smart") updateEndingText();
         }
 
         function renderScene(id) {
@@ -1967,6 +1955,17 @@
                 }).join("");
             }
 
+            // Handle result scenes
+            if (id.includes("-result")) {
+                const resultTextContainer = sceneEl.querySelector(".story-text");
+                if (resultTextContainer && gameState.lastChoice) {
+                    const actionKey = gameState.lastChoice.split("-")[1];
+                    if (sceneData[actionKey]) {
+                        resultTextContainer.innerHTML = sceneData[actionKey];
+                    }
+                }
+            }
+
             // Handle ending scenes
             if (sceneKey === 'foxTrust') {
                 const endingTitle = sceneEl.querySelector("#fox-trust-ending-title");
@@ -1993,6 +1992,7 @@
 
         function makeChoice(choice, karma) {
             gameState.karma += karma;
+            gameState.lastChoice = choice;
             gameState.choices.push(choice);
             updateStats();
             if (choice.startsWith("rabbit")) handleRabbit(choice);
@@ -2004,13 +2004,11 @@
             const t = translations[gameState.lang];
             const el = document.getElementById("rabbit-result-text");
             if (c === "rabbit-help") {
-                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.courage);
-                el.innerHTML = t.scenes.rabbitResult.help;
+                gameState.fragments++; gameState.inventoryKeys.push('courage');
             } else if (c === "rabbit-trick") {
-                el.innerHTML = t.scenes.rabbitResult.trick;
+                // ...
             } else {
-                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.courage);
-                el.innerHTML = t.scenes.rabbitResult.talk;
+                gameState.fragments++; gameState.inventoryKeys.push('courage');
             }
             updateInventory("inventory-list"); updateStats(); goToScene("scene-rabbit-result");
         }
@@ -2019,14 +2017,11 @@
             const t = translations[gameState.lang];
             const el = document.getElementById("wolf-result-text");
             if (c === "wolf-fix") {
-                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.wisdom);
-                el.innerHTML = t.scenes.wolfResult.fix;
+                gameState.fragments++; gameState.inventoryKeys.push('wisdom');
             } else if (c === "wolf-ignore") {
-                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.wisdom);
-                el.innerHTML = t.scenes.wolfResult.ignore;
+                gameState.fragments++; gameState.inventoryKeys.push('wisdom');
             } else {
-                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.wisdom);
-                el.innerHTML = t.scenes.wolfResult.teach;
+                gameState.fragments++; gameState.inventoryKeys.push('wisdom');
             }
             updateInventory("wolf-inventory-list"); updateStats(); goToScene("scene-wolf-result");
         }
@@ -2035,46 +2030,27 @@
             const t = translations[gameState.lang];
             const el = document.getElementById("bear-result-text");
             if (c === "bear-refuse") {
-                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.kindness);
-                el.innerHTML = t.scenes.bearResult.refuse;
+                gameState.fragments++; gameState.inventoryKeys.push('kindness');
             } else if (c === "bear-accept") {
-                el.innerHTML = t.scenes.bearResult.accept;
+                // ...
             } else {
-                gameState.fragments++; gameState.inventory.push(t.fragmentsNames.kindness);
-                el.innerHTML = t.scenes.bearResult.counter;
+                gameState.fragments++; gameState.inventoryKeys.push('kindness');
             }
             updateInventory("bear-inventory-list"); updateStats(); goToScene("scene-bear-result");
         }
 
         function updateInventory(id) {
-            document.getElementById(id).innerHTML = gameState.inventory
-                .map(i => `<div class="fragment-tag">◈ ${i}</div>`).join("");
+            const t = translations[gameState.lang];
+            const target = document.getElementById(id);
+            if (!target) return;
+            target.innerHTML = gameState.inventoryKeys
+                .map(key => `<div class="fragment-tag">◈ ${t.fragmentsNames[key]}</div>`).join("");
         }
 
-        function translateInventory() {
-            const t = translations[gameState.lang];
-            const namesMap = {
-                // RU → текущий язык
-                "Функция Смелости": t.fragmentsNames.courage,
-                "Класс Мудрости": t.fragmentsNames.wisdom,
-                "Модуль Доброты": t.fragmentsNames.kindness,
-                // UK → текущий язык
-                "Функція Сміливості": t.fragmentsNames.courage,
-                "Клас Мудрості": t.fragmentsNames.wisdom,
-                "Модуль Доброти": t.fragmentsNames.kindness,
-                // EN → текущий язык
-                "Courage Function": t.fragmentsNames.courage,
-                "Wisdom Class": t.fragmentsNames.wisdom,
-                "Kindness Module": t.fragmentsNames.kindness
-            };
-            gameState.inventory = gameState.inventory.map(item => namesMap[item] || item);
-            updateInventory("inventory-list");
-            updateInventory("wolf-inventory-list");
-            updateInventory("bear-inventory-list");
-        }
+
 
         function restart() {
-            gameState.fragments = 0; gameState.karma = 0; gameState.choices = []; gameState.inventory = [];
+            gameState.fragments = 0; gameState.karma = 0; gameState.choices = []; gameState.inventoryKeys = []; gameState.lastChoice = null;
             updateStats();
             document.getElementById("inventory-list").innerHTML = "";
             document.getElementById("wolf-inventory-list").innerHTML = "";
